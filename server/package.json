@@ -2,43 +2,15 @@
   "name": "thoridal-server",
   "version": "1.0.0",
   "description": "",
-  "private": true,
-  "dependencies": {
-    "egg": "^2.2.1",
-    "egg-scripts": "^2.5.0"
-  },
-  "devDependencies": {
-    "autod": "^3.0.1",
-    "autod-egg": "^1.0.0",
-    "egg-bin": "^4.3.5",
-    "egg-ci": "^1.8.0",
-    "egg-mock": "^3.14.0",
-    "eslint": "^4.11.0",
-    "eslint-config-egg": "^6.0.0",
-    "webstorm-disable-index": "^1.2.0"
-  },
-  "engines": {
-    "node": ">=8.9.0"
-  },
+  "main": "app/index.js",
   "scripts": {
-    "start": "egg-scripts start --daemon --title=egg-server-thoridal-server",
-    "stop": "egg-scripts stop --title=egg-server-thoridal-server",
-    "dev": "egg-bin dev",
-    "debug": "egg-bin debug",
-    "test": "npm run lint -- --fix && npm run test-local",
-    "test-local": "egg-bin test",
-    "cov": "egg-bin cov",
-    "lint": "eslint .",
-    "ci": "npm run lint && npm run cov",
-    "autod": "autod"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "ci": {
-    "version": "8"
-  },
-  "repository": {
-    "type": "git",
-    "url": ""
-  },
-  "author": "Wanglei",
-  "license": "MIT"
+  "author": "Wanglei(Nihiue@gmail.com)",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.5.0",
+    "koa-router": "^7.4.0",
+    "mongoose": "^5.0.14"
+  }
 }

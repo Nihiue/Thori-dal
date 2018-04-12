@@ -1,4 +1,5 @@
 # Logs
+server/config/credential.js
 logs
 *.log
 npm-debug.log*
