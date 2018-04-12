@@ -11,6 +11,9 @@
   "dependencies": {
     "koa": "^2.5.0",
     "koa-router": "^7.4.0",
-    "mongoose": "^5.0.14"
+    "koa-static": "^4.0.2",
+    "lodash": "^4.17.5",
+    "mongoose": "^5.0.14",
+    "koa-bodyparser": "^4.2.0"
   }
 }

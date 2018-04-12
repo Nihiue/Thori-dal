@@ -23,28 +23,32 @@ module.exports.User = new mongoose.Schema({
   }
 });
 
-
-
 module.exports.Record = new mongoose.Schema({
   Name: {
     type: String,
-    required: true
+    required: true,
+    index: true
   },
-  User: {
+  Creator: {
     type: ObjectId,
     required: true,
-    ref: 'User'
+    ref: 'User',
+    index: true
   },
   LastUpdate: {
     type: Date,
     default: Date.now
   },
   Data: {
-    type: Buffer
+    type: String,
+    default: ''
+  },
+  Deleted: {
+    type: Boolean,
+    default: false,
+    index: true
   }
 });
-
-
 
 module.exports.Log = new mongoose.Schema({
   CreateDate: {
