@@ -86,4 +86,12 @@ async function testListRecord() {
   output(JSON.stringify(res.data, null, 2));
 }
 
-testListRecord()
+async function testSendBackup() {
+  const res = await axios({
+    method: 'post',
+    url: '/users/sendBackup',
+    headers: getHeader()
+  });
+  output(JSON.stringify(res.data, null, 2));
+}
+testSendBackup();

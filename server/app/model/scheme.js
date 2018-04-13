@@ -29,6 +29,11 @@ module.exports.Record = new mongoose.Schema({
     required: true,
     index: true
   },
+  Type: {
+    type: Number,
+    default: 0,
+    index: true
+  },
   Creator: {
     type: ObjectId,
     required: true,

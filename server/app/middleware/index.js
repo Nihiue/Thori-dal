@@ -1,11 +1,10 @@
-const utils = require('./utils');
-const config = require('./config');
+const utils = require('../utils');
 
 module.exports.authMW = function () {
   const tokenCache = {};
-  const slotSize = config.acessTokenSlotSize;
 
   return async function (ctx, next) {
+
     if (ctx.request.path === '/bonjour') {
       await next();
       return;
@@ -23,6 +22,7 @@ module.exports.authMW = function () {
     let user;
 
     const cacheHit = tokenCache[reqUser];
+    const slotSize = ctx.config.accessTokenSlotSize;
 
     if (cacheHit && now < cacheHit.genTime + slotSize / 2) {
       validTokens = cacheHit.validTokens;
@@ -35,7 +35,7 @@ module.exports.authMW = function () {
         return ctx.throw(400, 'access denied.');
       }
       user = user.toObject();
-      validTokens = utils.getValidTokens(now, user.Token, config.hashSalt, slotSize);
+      validTokens = utils.getValidTokens(now, user.Token, ctx.config.hashSalt, slotSize);
       tokenCache[reqUser] = {
         validTokens,
         user,

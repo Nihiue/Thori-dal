@@ -1,19 +1,28 @@
 {
   "name": "thoridal-server",
   "version": "1.0.0",
-  "description": "",
   "main": "app/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "powershell \"$env:NODE_ENV='development'; nodemon --watch app app/index.js\""
   },
-  "author": "Wanglei(Nihiue@gmail.com)",
+  "author": "Wanglei (Nihiue@gmail.com)",
   "license": "ISC",
   "dependencies": {
+    "koa": "^2.5.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-router": "^7.4.0",
+    "koa-static": "^4.0.2",
+    "lodash": "^4.17.5",
+    "mongoose": "^5.0.14",
+    "nodemailer": "^4.6.4"
+  },
+  "devDependencies": {
     "koa": "^2.5.0",
     "koa-router": "^7.4.0",
     "koa-static": "^4.0.2",
     "lodash": "^4.17.5",
     "mongoose": "^5.0.14",
     "koa-bodyparser": "^4.2.0"
-  }
+  },
+  "description": ""
 }

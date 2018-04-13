@@ -1,6 +1,5 @@
 const Router = require('koa-router');
 const router = new Router();
-const config = require('../config');
 const middleware = require('../middleware');
 
 function loadRoutes(router, routes) {
@@ -17,7 +16,7 @@ router
   .get('/bonjour', (ctx) => {
     ctx.body = {
       date: Date.now(),
-      salt: config.hashSalt
+      salt: ctx.config.hashSalt
     }
   });
 
