@@ -42,7 +42,8 @@ module.exports.Record = new mongoose.Schema({
   },
   LastUpdate: {
     type: Date,
-    default: Date.now
+    default: Date.now,
+    index: true
   },
   Data: {
     type: String,

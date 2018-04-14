@@ -1,6 +1,10 @@
 const router = require('koa-router')();
 const utils = require('../utils');
 router
+  .get('/:name', async (ctx) => {
+    let user = await ctx.model.User.findById(ctx.user._id).select('Name AdminFlag').exec();
+    ctx.body = user;
+  })
   .post('/', async (ctx) => {
     try {
       if (ctx.user && ctx.user.AdminFlag) {

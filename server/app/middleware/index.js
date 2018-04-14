@@ -1,53 +1,39 @@
 const utils = require('../utils');
 
 module.exports.authMW = function () {
-  const tokenCache = {};
 
   return async function (ctx, next) {
 
-    if (ctx.request.path === '/bonjour') {
+    if (ctx.request.path === '/api/bonjour') {
       await next();
       return;
     }
 
-    const reqUser = ctx.request.header['x-thoridal-user'];
-    const reqToken = ctx.request.header['x-thoridal-atk'];
+    let reqAuth = ctx.request.header['x-thoridal-auth'];
 
-    if (!reqUser || !reqToken) {
-      return ctx.throw(400, 'access denied.');
+    if (!reqAuth) {
+      return ctx.throw(401);
     }
 
-    const now = Date.now();
-    let validTokens;
-    let user;
+    reqAuth = reqAuth.split('&');
 
-    const cacheHit = tokenCache[reqUser];
-    const slotSize = ctx.config.accessTokenSlotSize;
-
-    if (cacheHit && now < cacheHit.genTime + slotSize / 2) {
-      validTokens = cacheHit.validTokens;
-      user = cacheHit.user;
-    } else {
-      user = await ctx.model.User.findOne({
-        Name: reqUser
-      }).select('Name Token AdminFlag').exec();
-      if (!user) {
-        return ctx.throw(400, 'access denied.');
-      }
-      user = user.toObject();
-      validTokens = utils.getValidTokens(now, user.Token, ctx.config.hashSalt, slotSize);
-      tokenCache[reqUser] = {
-        validTokens,
-        user,
-        genTime: now
-      };
+    const clientAuth = {
+      user: decodeURIComponent(reqAuth[0]),
+      accessToken: reqAuth[1],
+      time: parseInt(reqAuth[2], 10)
     }
 
-    if (!validTokens.includes(reqToken)) {
-      return ctx.throw(400, 'access denied.');
+    if (isNaN(clientAuth.time) || Math.abs(clientAuth.time - Date.now()) > 5000) {
+      return ctx.throw(401);
     }
 
-    ctx.user = user;
+    let user = await ctx.model.User.findOne({ Name: clientAuth.user }).select('Name Token AdminFlag').exec();
+
+    if (!user || clientAuth.accessToken !== utils.getAccessToken(user.Token, ctx.config.hashSalt, clientAuth.time)) {
+      return ctx.throw(401);
+    }
+
+    ctx.user = user.toObject();
     await next();
 
   }

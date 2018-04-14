@@ -1,41 +1,62 @@
 <template>
   <div class="thoridal-login">
     <div class="login-box">
-      <el-form ref="form" label-position="top" :model="form" label-width="80px" @submit.native.prevent="doLogin">
+      <el-form ref="form" label-position="top" label-width="80px" @submit.native.prevent="loginSubmit">
         <h1>Thori'dal</h1>
         <el-form-item>
-          <el-input v-model="form.name" name="thoridal-username" placeholder="Name" required></el-input>
+          <el-input v-model="form.name" name="thoridal-username" prefix-icon="iconfont icon-account" required></el-input>
         </el-form-item>
         <el-form-item>
-          <el-input v-model="form.password" name="thoridal-acesstoken" type="password" placeholder="Password" required></el-input>
+          <el-input v-model="form.password" name="thoridal-acesstoken" type="password" prefix-icon="iconfont icon-password" required></el-input>
         </el-form-item>
         <el-form-item v-show="!isSubmitting">
-          <el-button type="primary" native-type="submit" style="width: 100%">Login</el-button>
+          <el-button type="primary" native-type="submit" style="width: 100%">Go</el-button>
         </el-form-item>
         <el-form-item v-show="isSubmitting">
-          <el-button v-show="isSubmitting" type="primary" native-type="button" style="width: 100%" disabled><span class="el-icon-loading"></span></el-button>
+          <el-button type="primary" native-type="button" style="width: 100%" disabled>
+            <span class="el-icon-loading"></span>
+          </el-button>
         </el-form-item>
       </el-form>
+      <el-alert v-show="error" title="Login Failed" type="error" :closable="false"> </el-alert>
     </div>
   </div>
 </template>
 
 <script>
-
 export default {
+  async created() {
+    await this.$store.dispatch('bonjour');
+  },
   data() {
     return {
       form: {
         name: '',
         password: ''
       },
-      isSubmitting: false
+      isSubmitting: false,
+      error: false
     };
   },
   methods: {
-    doLogin() {
-      this.isSubmitting = true;
-      console.log(this.form);
+    async loginSubmit() {
+      try {
+        this.error = false;
+        this.isSubmitting = true;
+        this.$store.commit('updateAuth', {
+          name: this.form.name,
+          password: this.form.password
+        });
+        await this.$store.dispatch('fetchUserInfo');
+        this.isSubmitting = false;
+        this.$router.push({
+          name: 'list'
+        });
+      } catch (e) {
+        this.error = true;
+        this.isSubmitting = false;
+        this.$store.commit('updateAuth', null);
+      }
     }
   }
 };
@@ -44,15 +65,17 @@ export default {
 
 <style lang="scss">
   .thoridal-login {
-    background: rgb(246,246,246);
     display: flex;
-    height: 100vh;
+    height: 90vh;
     align-items: center;
     .login-box {
+      box-shadow: 0 2px 3px rgba(240, 240, 240, 0.5);
       background: #fff;
+      border-radius: 3px;
+      border: 1px solid #ebebeb;
       padding: 50px 82px 60px 82px;
-      box-shadow: 0 2px 3px rgba(213, 213, 213, 0.7);
-      width: 296px;
+      width: 100%;
+      max-width: 296px;
       min-height: 300px;
       margin: 0 auto;
     }
@@ -64,5 +87,12 @@ export default {
       margin-bottom: 50px;
     }
   }
-
+  @media screen and (max-width:768px) {
+    .thoridal-login {
+      padding: 16px 0;
+      .login-box {
+        padding: 30px 40px;
+      }
+    }
+  }
 </style>

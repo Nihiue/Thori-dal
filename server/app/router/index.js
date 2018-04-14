@@ -5,15 +5,15 @@ const middleware = require('../middleware');
 function loadRoutes(router, routes) {
   routes.forEach(p => {
     const rt = require('.' + p);
-    router.use(p, rt.routes());
-    router.use(p, rt.allowedMethods());
+    router.use('/api' + p, rt.routes());
+    router.use('/api' + p, rt.allowedMethods());
   });
 }
 
 router.use(middleware.authMW());
 
 router
-  .get('/bonjour', (ctx) => {
+  .get('/api/bonjour', (ctx) => {
     ctx.body = {
       date: Date.now(),
       salt: ctx.config.hashSalt
