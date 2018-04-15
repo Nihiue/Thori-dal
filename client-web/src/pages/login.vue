@@ -9,25 +9,17 @@
         <el-form-item>
           <el-input v-model="form.password" name="thoridal-acesstoken" type="password" prefix-icon="iconfont icon-password" required></el-input>
         </el-form-item>
-        <el-form-item v-show="!isSubmitting">
-          <el-button type="primary" native-type="submit" style="width: 100%">Go</el-button>
-        </el-form-item>
-        <el-form-item v-show="isSubmitting">
-          <el-button type="primary" native-type="button" style="width: 100%" disabled>
-            <span class="el-icon-loading"></span>
-          </el-button>
+        <el-form-item>
+          <el-button type="primary" native-type="submit" style="width: 100%" :loading="isSubmitting">Login</el-button>
         </el-form-item>
       </el-form>
-      <el-alert v-show="error" title="Login Failed" type="error" :closable="false"> </el-alert>
+      <el-alert v-show="error" title="Login Failed" type="error" :closable="false"></el-alert>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  async created() {
-    await this.$store.dispatch('bonjour');
-  },
   data() {
     return {
       form: {
@@ -40,6 +32,9 @@ export default {
   },
   methods: {
     async loginSubmit() {
+      if (this.isSubmitting) {
+        return;
+      }
       try {
         this.error = false;
         this.isSubmitting = true;
@@ -49,9 +44,6 @@ export default {
         });
         await this.$store.dispatch('fetchUserInfo');
         this.isSubmitting = false;
-        this.$router.push({
-          name: 'list'
-        });
       } catch (e) {
         this.error = true;
         this.isSubmitting = false;

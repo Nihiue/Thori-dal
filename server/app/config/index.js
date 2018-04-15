@@ -2,8 +2,7 @@ const credential = require('./credential');
 
 const config = {
   port: 3000,
-  accessTokenSlotSize: 60000,
-  hashSalt: '1db750dc352f4128810d6ac77a18a33b'
+  hashSalt: '6ebb3812-5ad4-46bd-b73c-1bfefadb317f'
 };
 
 

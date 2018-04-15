@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
-import { getAccessToken } from '../utils';
+import { getAccessToken, genUserToken } from '../utils';
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
@@ -17,7 +17,7 @@ const store = new Vuex.Store({
         state.auth = {
           name: data.name,
           password: data.password,
-          token: window.CryptoJS.SHA256(`${data.name}|${data.password}`).toString()
+          token: genUserToken(data.name, data.password)
         };
       } else {
         state.auth = null;

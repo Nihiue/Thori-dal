@@ -59,9 +59,10 @@ module.exports.Record = new mongoose.Schema({
 module.exports.Log = new mongoose.Schema({
   CreateDate: {
     type: Date,
-    required: true,
     default: Date.now
   },
+  IP: String,
+  User: String,
   Type: String,
   Data: Mixed
 });

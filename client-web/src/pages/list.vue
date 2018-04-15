@@ -3,18 +3,18 @@
     <div class="light-block list-header">
       <div class="search">
         <form @submit.prevent="fetchRecordList(1)">
-          <el-input size="small" v-model="searchInput" prefix-icon="el-icon-search"></el-input>
+          <el-input size="small" v-model="searchInput" prefix-icon="el-icon-search" tabindex="10" autofocus></el-input>
         </form>
       </div>
       <div class="action-row">
-        <el-button type="text" icon="el-icon-refresh" @click="refreshList()"></el-button>
-        <el-button type="text" icon="el-icon-plus" @click="addRecord()"></el-button>
+        <el-button type="text" icon="el-icon-refresh" @click="refreshList()" tabindex="-1"></el-button>
+        <el-button type="text" icon="el-icon-plus" @click="addRecord()" tabindex="-1"></el-button>
         <el-dropdown @command="handleHeadDropdown" trigger="click">
-          <el-button type="text" icon="el-icon-more"></el-button>
-          <el-dropdown-menu slot="dropdown" class="th-header-dropdown">
-            <el-dropdown-item command="modify-password"><span class="iconfont icon-edit"></span> 修改密码</el-dropdown-item>
-            <el-dropdown-item command="send-backup"><span class="iconfont icon-modify"></span> 备份数据</el-dropdown-item>
-            <el-dropdown-item command="create-user" divided v-if="isAdmin"><span class="iconfont icon-collection"></span> 创建用户</el-dropdown-item>
+          <el-button type="text" icon="el-icon-more" tabindex="-1"></el-button>
+          <el-dropdown-menu slot="dropdown" class="th-header-dropdown" tabindex="-1">
+            <el-dropdown-item command="modify-password"><span class="iconfont icon-edit"></span> Change Key</el-dropdown-item>
+            <el-dropdown-item command="send-backup"><span class="iconfont icon-modify"></span> Send Backup</el-dropdown-item>
+            <el-dropdown-item command="create-user" divided v-if="isAdmin"><span class="iconfont icon-collection"></span> Create User</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -22,8 +22,8 @@
     <div class="list-content">
       <div class="light-block list-card" v-for="(item, itemIndex) in listData" :key="item._id">
         <div class="action-row">
-          <el-button type="text" icon="el-icon-edit" @click="openEditRecord(item)"></el-button>
-          <el-button type="text" icon="el-icon-delete" @click="deleteRecord(item, itemIndex)"></el-button>
+          <el-button type="text" icon="el-icon-edit" @click="openEditRecord(item)" tabindex="-1"></el-button>
+          <el-button type="text" icon="el-icon-delete" @click="deleteRecord(item, itemIndex)" tabindex="-1"></el-button>
         </div>
         <h2 class="title">{{item.Name}}</h2>
         <div class="info-container">
@@ -49,16 +49,16 @@
     </div>
     <record-editor ref="recordEditor" @refresh-list="refreshList" @patch-item="patchListItem"></record-editor>
     <user-creator ref="userCreator"></user-creator>
-    <input type="text" id="copy-container">
+    <input type="text" id="copy-container" tabindex="-1">
   </div>
 </template>
 <script>
 import axios from 'axios';
 import recordEditorView from '../components/recordEditor';
 import userCreatorView from '../components/userCreator';
-import { decryptAES } from '../utils';
+import { decryptAES, genRandomPassword } from '../utils';
 
-const PAGE_SIZE = 15;
+const PAGE_SIZE = 10;
 
 export default {
   components: {
@@ -80,19 +80,22 @@ export default {
     this.fetchRecordList(1);
   },
   methods: {
-    refreshList() {
-      this.fetchRecordList(1);
+    async refreshList() {
+      await this.fetchRecordList(1);
+      this.$root.success('Refreshed');
     },
     addRecord() {
       this.$refs.recordEditor.open({
         Name: '',
-        Data: {}
+        Data: {
+          Password: genRandomPassword(12)
+        }
       });
     },
     handleHeadDropdown(cmd) {
       switch (cmd) {
         case 'modify-password':
-          this.$root.confirm('此功能尚在开发中');
+          this.$root.confirm('ToDo');
           break;
         case 'send-backup':
           this.sendBackup();
@@ -133,19 +136,19 @@ export default {
           this.listData = this.listData.concat(newData);
         }
       } catch (e) {
-        this.$root.errorLogger(e, '获取数据失败');
+        this.$root.errorLogger(e, 'Unable to fetch data');
       }
     },
     async sendBackup() {
-      const isConfirm = await this.$root.confirm('发送备份数据到邮箱？');
+      const isConfirm = await this.$root.confirm('Send backup data by Email?');
       if (!isConfirm) {
         return;
       }
       try {
         await axios.post('/api/users/sendBackup');
-        this.$root.success('备份数据已发送');
+        this.$root.success('Backup sent');
       } catch (e) {
-        this.$root.errorLogger(e, '备份发送失败');
+        this.$root.errorLogger(e, 'Unable to send backup');
       }
     },
     patchListItem({id, data}) {
@@ -159,7 +162,7 @@ export default {
       item.Data = data.Data;
     },
     async deleteRecord(item, index) {
-      const isConfirm = await this.$root.confirm(`确认删除 ${item.Name} ?`);
+      const isConfirm = await this.$root.confirm(`Delete ${item.Name} ?`);
       if (!isConfirm) {
         return;
       }
@@ -167,7 +170,7 @@ export default {
         await axios.delete(`/api/records/${item._id}`);
         this.listData.splice(index, 1);
       } catch (e) {
-        this.$root.errorLogger(e, '删除出错');
+        this.$root.errorLogger(e, 'Unable to delete');
       }
     },
     openEditRecord(item) {
@@ -178,7 +181,7 @@ export default {
       el.value = text;
       el.select();
       if (window.document.execCommand('copy')) {
-        this.$root.success('已复制');
+        this.$root.success('Copied');
       }
     }
   },
@@ -279,10 +282,10 @@ export default {
       }
     }
     #copy-container {
+      width: 10px;
       opacity: 0;
       pointer-events: none;
-      z-index: -1;
-      position: fixed;
+      position: absolute;
       left: 0;
       top: 0;
     }

@@ -3,16 +3,16 @@
 import Vue from 'vue';
 
 import ElementUI from 'element-ui';
+import locale from 'element-ui/lib/locale/lang/en';
 import './styles/theme/index.css';
 import './styles/base.scss';
 
 import store from './store/index.js';
 import App from './App';
-import router from './router';
 import './utils/directives';
 import './utils/filter';
 
-Vue.use(ElementUI);
+Vue.use(ElementUI, { locale });
 
 Vue.config.productionTip = false;
 
@@ -21,6 +21,5 @@ const RootAppConstructor = Vue.extend(App);
 
 new RootAppConstructor({
   el: '#app',
-  store,
-  router
+  store
 });

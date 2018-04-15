@@ -7,6 +7,8 @@ const path = require('path');
 
 global._ = require('lodash');
 
+// .use(require('koa-static')(path.join(__dirname, '../public/')))
+
 async function startApp(params) {
   try {
     const app = new Koa();
@@ -18,7 +20,6 @@ async function startApp(params) {
     app.context.config = config;
 
     app
-      .use(require('koa-static')(path.join(__dirname, '../public/')))
       .use(bodyParser())
       .use(router.routes())
       .use(router.allowedMethods());

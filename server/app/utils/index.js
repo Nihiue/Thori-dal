@@ -7,6 +7,12 @@ module.exports.getAccessToken = function (token, salt, time) {
   return hash.digest('hex');
 };
 
+module.exports.createLog = async function(ctx, data) {
+  data.IP = (typeof ctx.ip === 'string') ? ctx.ip.split(':').pop() : '';
+  data.User = ctx.user ? ctx.user._id : '';
+  await ctx.model.Log.create(data);
+}
+
 module.exports.sendEmail = function ({account, to, subject, text}) {
   return new Promise(function (resolve, reject) {
     let transporter = nodemailer.createTransport({

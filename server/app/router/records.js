@@ -17,7 +17,7 @@ router
       query.Type = Number(ctx.query.Type);
     }
     const totalNum = await ctx.model.Record.count(query).exec();
-    const res = await ctx.model.Record.find(query).limit(pageSize).skip((page - 1) * pageSize).sort('-LastUpdate').select('Name Type LastUpdate Data').exec();
+    const res = await ctx.model.Record.find(query).limit(pageSize).skip((page - 1) * pageSize).sort('-_id').select('Name Type LastUpdate Data').exec();
     ctx.body = {
       data: res,
       page,
@@ -33,12 +33,10 @@ router
     });
     ctx.body = res;
   })
-  /*
   .get('/:id', async (ctx) => {
     const res = await ctx.model.Record.findOne({ _id: ctx.params.id, Deleted: false, Creator: ctx.user._id }).select('Name Type LastUpdate Data').exec();
     ctx.body = res;
   })
-  */
   .put('/:id', async (ctx) => {
     await ctx.model.Record.update({ _id: ctx.params.id, Deleted: false, Creator: ctx.user._id }, {
       Name: ctx.request.body.Name,

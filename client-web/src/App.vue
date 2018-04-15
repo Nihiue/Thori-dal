@@ -1,16 +1,50 @@
 <template>
   <div id="app">
-    <router-view/>
+    <component :is="activeComponent"></component>
   </div>
 </template>
 
 <script>
+import listView from './pages/list';
+import loginView from './pages/login';
 export default {
   name: 'App',
+  mounted() {
+    this.bonjour();
+    this.checkHttps();
+  },
+  components: {
+    'thoridal-list': listView,
+    'thoridal-login': loginView
+  },
   methods: {
+    async bonjour() {
+      try {
+        await this.$store.dispatch('bonjour');
+      } catch (e) {
+        this.errorLogger(e, 'Unable to fetch server info');
+      }
+    },
+    checkHttps() {
+      if (location.protocol === 'https:') {
+        return;
+      }
+      const url = new URL('./static/thori_dal.jpg', location.href);
+      url.protocol = 'https:';
+      const el = document.createElement('img');
+      el.addEventListener('load', async () => {
+        const isConfirm = await this.confirm('Switch to HTTPS?', 'HTTPS Available');
+        if (isConfirm) {
+          location.replace(location.href.replace('http:', 'https:'));
+        }
+      });
+      el.src = url.href;
+      el.style.display = 'none';
+      document.body.appendChild(el);
+    },
     confirm(content, title) {
       return new Promise((resolve) => {
-        this.$confirm(content, title || '确认', {
+        this.$confirm(content, title || 'Confirm', {
           callback: function(action) {
             resolve(action === 'confirm');
           }
@@ -26,9 +60,17 @@ export default {
     },
     errorLogger(e, title) {
       this.$notify.error({
-        title: title || '错误',
+        title: title || 'Error',
         message: e.response ? e.response.data : e.toString()
       });
+    }
+  },
+  computed: {
+    activeComponent() {
+      if (this.$store.state.userInfo) {
+        return 'thoridal-list';
+      }
+      return 'thoridal-login';
     }
   }
 };

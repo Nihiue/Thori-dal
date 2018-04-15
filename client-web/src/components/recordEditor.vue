@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="item._id ? '编辑记录': '创建记录'" :visible="dialogVisible" width="570px" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
+  <el-dialog :title="item._id ? 'Edit Record': 'New Record'" :visible="dialogVisible" width="570px" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
     <div class="record-editor-dialog">
       <el-form ref="form" label-width="0">
         <el-form-item>
@@ -20,14 +20,14 @@
               <el-input type="textarea" v-model="filed.Value" rows="4" spellcheck="false"></el-input>
           </div>
           <div style="text-align:center">
-            <el-button type="text" @click="appendField" icon="el-icon-plus"> 添加字段</el-button>
+            <el-button type="text" @click="appendField" icon="el-icon-plus"> Add Field</el-button>
           </div>
         </div>
       </el-form>
     </div>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="cancel">取消</el-button>
-      <el-button type="primary" @click="submit" :loading="isSubmitting">确定</el-button>
+      <el-button @click="cancel">Cancel</el-button>
+      <el-button type="primary" @click="submit" :loading="isSubmitting">OK</el-button>
     </span>
   </el-dialog>
 </template>
@@ -82,7 +82,7 @@ export default {
         return;
       }
       this.item.Data.Fields = this.item.Data.Fields.filter(function(f) {
-        return f.Name && f.Value;
+        return f.Name || f.Value;
       });
       try {
         this.isSubmitting = true;
@@ -99,7 +99,7 @@ export default {
         this.dialogVisible = false;
       } catch (e) {
         this.isSubmitting = false;
-        this.$root.errorLogger(e, '请求失败');
+        this.$root.errorLogger(e, 'Unable to save');
       }
     },
     cancel() {

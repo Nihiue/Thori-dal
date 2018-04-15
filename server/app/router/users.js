@@ -10,6 +10,12 @@ router
       if (ctx.user && ctx.user.AdminFlag) {
         const newUser = await ctx.model.User.create(ctx.request.body);
         ctx.body = newUser;
+        await utils.createLog(ctx, {
+          Type: 'NewUser',
+          Data: {
+            NewUser: newUser._id
+          }
+        });
       }
     } catch (e) {
       ctx.throw(400, 'user already exist.');
@@ -23,15 +29,22 @@ router
         return ctx.throw(400, 'no email address.');
       }
       const now = new Date();
+      const emailText = JSON.stringify({
+        records,
+        exportDate: now.valueOf(),
+        userID: user._id
+      });
       await utils.sendEmail({
         account: ctx.config.emailSender,
         subject: 'Records Backup ' + now.toLocaleString(),
-        text: JSON.stringify({
-          records,
-          exportDate: now.valueOf(),
-          userID: user._id
-        }),
+        text: emailText,
         to: user.Email
+      });
+      await utils.createLog(ctx, {
+        Type: 'SendBackup',
+        Data: {
+          Content: emailText
+        }
       });
       ctx.status = 200;
     } catch (e) {
