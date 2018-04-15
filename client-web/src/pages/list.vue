@@ -3,7 +3,7 @@
     <div class="light-block list-header">
       <div class="search">
         <form @submit.prevent="fetchRecordList(1)">
-          <el-input size="small" v-model="searchInput" prefix-icon="el-icon-search" tabindex="10" autofocus></el-input>
+          <el-input size="small" v-model="searchInput" prefix-icon="el-icon-search" tabindex="10"></el-input>
         </form>
       </div>
       <div class="action-row">
@@ -49,7 +49,7 @@
     </div>
     <record-editor ref="recordEditor" @refresh-list="refreshList" @patch-item="patchListItem"></record-editor>
     <user-creator ref="userCreator"></user-creator>
-    <input type="text" id="copy-container" tabindex="-1">
+    <input type="text" id="copy-container" tabindex="-1" readonly>
   </div>
 </template>
 <script>

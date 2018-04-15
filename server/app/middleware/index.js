@@ -9,7 +9,7 @@ module.exports.authMW = function () {
     deniedReqs.push({
       Url: `${ctx.request.method} ${ctx.request.path}`,
       Time: now,
-      IP: (typeof ctx.ip === 'string') ? ctx.ip.split(':').pop() : '',
+      IP: utils.getIP(ctx),
       AuthHeader: ctx.request.header['x-thoridal-auth'],
     });
     if (deniedReqs.length >= 10) {

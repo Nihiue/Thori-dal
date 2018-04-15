@@ -7,8 +7,15 @@ module.exports.getAccessToken = function (token, salt, time) {
   return hash.digest('hex');
 };
 
+module.exports.getIP = function getIP(ctx) {
+  if (ctx.request.header['x-real-ip']) {
+    return ctx.request.header['x-real-ip'];
+  }
+  return (typeof ctx.ip === 'string') ? ctx.ip.split(':').pop() : '';
+}
+
 module.exports.createLog = async function(ctx, data) {
-  data.IP = (typeof ctx.ip === 'string') ? ctx.ip.split(':').pop() : '';
+  data.IP = getIP(ctx);
   data.User = ctx.user ? ctx.user._id : '';
   await ctx.model.Log.create(data);
 }
