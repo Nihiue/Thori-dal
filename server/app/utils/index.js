@@ -7,12 +7,14 @@ module.exports.getAccessToken = function (token, salt, time) {
   return hash.digest('hex');
 };
 
-module.exports.getIP = function getIP(ctx) {
+function getIP(ctx) {
   if (ctx.request.header['x-real-ip']) {
     return ctx.request.header['x-real-ip'];
   }
   return (typeof ctx.ip === 'string') ? ctx.ip.split(':').pop() : '';
 }
+
+module.exports.getIP = getIP;
 
 module.exports.createLog = async function(ctx, data) {
   data.IP = getIP(ctx);
