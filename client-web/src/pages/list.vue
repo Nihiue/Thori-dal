@@ -36,15 +36,16 @@
         </div>
         <el-collapse v-if="item.Data.Fields && item.Data.Fields.length > 0">
           <el-collapse-item v-for="(field, fIdx) in item.Data.Fields" :title="field.Name" :key="fIdx" :name="fIdx" >
-            <pre>{{field.Value}}</pre>
+            <pre class="custom-fileds-pre">{{field.Value}}</pre>
           </el-collapse-item>
         </el-collapse>
       </div>
     </div>
     <div class="loadmore" v-show="listCtr.page < listCtr.total" @click="fetchRecordList(listCtr.page + 1)" :title="listCtr.page + '/' + listCtr.total ">
-      <span class="iconfont icon-down"></span>
+      <span class="iconfont icon-down" v-show="!listCtr.isRequesting"></span>
+      <span class="el-icon-loading" v-show="listCtr.isRequesting"></span>
     </div>
-    <div class="empyt-placeholder" v-show="listData.length === 0">
+    <div class="empyt-placeholder" v-show="listData.length === 0 && !listCtr.isRequesting">
       <span class="iconfont icon-emptybox"></span>
     </div>
     <record-editor ref="recordEditor" @refresh-list="refreshList" @patch-item="patchListItem"></record-editor>
@@ -70,6 +71,7 @@ export default {
       searchInput: '',
       listData: [],
       listCtr: {
+        isRequesting: false,
         total: 0,
         page: 1,
         totalNum: 0
@@ -106,8 +108,11 @@ export default {
       }
     },
     async fetchRecordList(page = 1) {
+      if (this.listCtr.isRequesting) {
+        return;
+      }
       try {
-        this.listCtr.page = page;
+        this.listCtr.isRequesting = true;
         const resp = await axios.get('/api/records', {
           params: {
             pageSize: PAGE_SIZE,
@@ -117,6 +122,7 @@ export default {
           }
         });
         this.listCtr = {
+          isRequesting: false,
           total: Math.ceil(resp.data.totalNum / PAGE_SIZE),
           totalNum: resp.data.totalNum,
           page: resp.data.page
@@ -136,6 +142,7 @@ export default {
           this.listData = this.listData.concat(newData);
         }
       } catch (e) {
+        this.listCtr.isRequesting = false;
         this.$root.errorLogger(e, 'Unable to fetch data');
       }
     },
@@ -259,13 +266,16 @@ export default {
         opacity: 1;
       }
     }
+    .custom-fileds-pre {
+      white-space: pre-wrap;
+    }
     .loadmore {
       text-align: center;
       padding: 16px 0;
       cursor: pointer;
       opacity: 0.5;
       transition: opacity 0.3s ease;
-      .iconfont {
+      .iconfont, .el-icon-loading {
         font-size: 24px;
       }
       &:hover {
