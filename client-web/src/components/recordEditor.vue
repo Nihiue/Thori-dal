@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="item._id ? 'Edit Record': 'New Record'" :visible="dialogVisible" width="570px" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
+  <el-dialog :title="item._id ? 'Edit Record': 'New Record'" :visible.sync="dialogVisible" width="570px" :close-on-click-modal="false" :close-on-press-escape="false">
     <div class="record-editor-dialog">
       <el-form ref="form" label-width="0">
         <el-form-item>

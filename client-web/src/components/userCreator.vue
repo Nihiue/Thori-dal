@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="Create User" :visible="dialogVisible" width="570px" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
+  <el-dialog title="Create User" :visible.sync="dialogVisible" width="570px" :close-on-click-modal="false" :close-on-press-escape="false">
     <div class="user-creator-dialog">
       <el-form ref="form" label-width="80px">
         <el-form-item label="Name">

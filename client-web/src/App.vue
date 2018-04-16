@@ -45,6 +45,7 @@ export default {
     confirm(content, title) {
       return new Promise((resolve) => {
         this.$confirm(content, title || 'Confirm', {
+          lockScroll: false,
           callback: function(action) {
             resolve(action === 'confirm');
           }

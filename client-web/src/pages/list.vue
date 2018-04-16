@@ -1,9 +1,9 @@
 <template>
   <div class="container thoridal-list">
-    <div class="light-block list-header">
+    <div class="light-block list-header action-row-container">
       <div class="search">
         <form @submit.prevent="fetchRecordList(1)">
-          <el-input size="small" v-model="searchInput" prefix-icon="el-icon-search" tabindex="10"></el-input>
+          <el-input :class="{active: searchInput.length > 0}" size="small" v-model="searchInput" prefix-icon="el-icon-search" tabindex="10"></el-input>
         </form>
       </div>
       <div class="action-row">
@@ -21,11 +21,13 @@
     </div>
     <div class="list-content">
       <div class="light-block list-card" v-for="(item, itemIndex) in listData" :key="item._id">
-        <div class="action-row">
-          <el-button type="text" icon="el-icon-edit" @click="openEditRecord(item)" tabindex="-1"></el-button>
-          <el-button type="text" icon="el-icon-delete" @click="deleteRecord(item, itemIndex)" tabindex="-1"></el-button>
+        <div class="action-row-container">
+          <h2 class="title">{{item.Name}}</h2>
+          <div class="action-row">
+            <el-button type="text" icon="el-icon-edit" @click="openEditRecord(item)" tabindex="-1"></el-button>
+            <el-button type="text" icon="el-icon-delete" @click="deleteRecord(item, itemIndex)" tabindex="-1"></el-button>
+          </div>
         </div>
-        <h2 class="title">{{item.Name}}</h2>
         <div class="info-container">
           <p @click="copyText(item.Data.Account)" v-if="item.Data.Account">
             <span class="iconfont icon-account"></span>{{item.Data.Account}}</p>
@@ -214,34 +216,59 @@ export default {
       padding: 24px 32px;
       margin-bottom: 16px;
     }
-    .action-row {
-      position: absolute;
-      right: 32px;
-      top: 28px;
-      .el-button {
-        padding: 0;
-        margin-left: 16px;
-        font-size: 22px;
+    .action-row-container {
+      display: flex;
+      align-items: center;
+      > * {
+        flex-grow: 1;
+        overflow-x: hidden;
+      }
+      .action-row {
+        overflow-x: initial;
+        flex-shrink: 0;
+        flex-grow: 0;
+        .el-button {
+          padding: 0;
+          margin-left: 16px;
+          font-size: 22px;
+        }
       }
     }
-    .list-header {
-      position: relative;
-      .el-input {
-        max-width: 16em;
+    .search .el-input{
+      padding: 4px 0;
+      .el-input__icon {
+        font-size: 16px;
+      }
+      input {
+          width: 5em;
+          max-width: 100%;
+          transition: all 0.5s ease;
+          border-color: transparent;
+      }
+      input:focus {
+        width: 15em;
+        border-color: inherit;
+      }
+      &:hover,&.active {
+        input {
+          width: 15em;
+          border-color: inherit;
+        }
       }
     }
     .list-card {
-      position: relative;
       .action-row {
         opacity: 0;
         transition: opacity 0.3s ease;
       }
       .title {
-        margin-top: 0;
+        word-break: break-all;
+        margin: 0;
+        padding: 12px 0;
       }
       .info-container {
         line-height: 20px;
-        margin: 12px 0;
+        margin-bottom: 12px;
       }
       .iconfont {
         line-height: 20px;
@@ -308,10 +335,15 @@ export default {
   @media screen and (max-width:768px) {
     .thoridal-list {
       padding: 16px 0;
-      .list-header {
-        .el-input {
-          max-width: 50vw;
-        }
+      .light-block {
+        padding: 18px 24px;
+      }
+      .search .el-input {
+        padding: 0;
+      }
+      .action-row-container .action-row .el-button{
+        margin-left: 12px;
+        font-size: 22px;
       }
     }
   }
