@@ -59,7 +59,7 @@
 import axios from 'axios';
 import recordEditorView from '../components/recordEditor';
 import userCreatorView from '../components/userCreator';
-import { decryptAES, genRandomPassword } from '../utils';
+import { decryptObject, genRandomPassword } from '../utils/cipher';
 
 const PAGE_SIZE = 10;
 
@@ -130,12 +130,7 @@ export default {
           page: resp.data.page
         };
         const newData = resp.data.data.map((item) => {
-          if (item.Data) {
-            let text = decryptAES(item.Data, this.auth.password);
-            item.Data = text ? JSON.parse(text) : {};
-          } else {
-            item.Data = {};
-          }
+          item.Data = decryptObject(item.Data, this.auth.password);
           return item;
         });
         if (this.listCtr.page === 1) {

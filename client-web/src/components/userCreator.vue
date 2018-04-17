@@ -23,7 +23,7 @@
   </el-dialog>
 </template>
 <script>
-import { genUserToken } from '../utils';
+import { genUserToken } from '../utils/cipher';
 import axios from 'axios';
 export default {
   data() {
