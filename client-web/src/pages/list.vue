@@ -3,7 +3,7 @@
     <div class="light-block list-header action-row-container">
       <div class="search">
         <form @submit.prevent="fetchRecordList(1)">
-          <el-input :class="{active: searchInput.length > 0}" size="small" v-model="searchInput" prefix-icon="el-icon-search" tabindex="10"></el-input>
+          <el-input role="search" :class="{active: searchInput.length > 0}" size="small" v-model="searchInput" prefix-icon="el-icon-search" tabindex="10"></el-input>
         </form>
       </div>
       <div class="action-row">
@@ -12,7 +12,7 @@
         <el-dropdown @command="handleHeadDropdown" trigger="click">
           <el-button type="text" icon="el-icon-more" tabindex="-1"></el-button>
           <el-dropdown-menu slot="dropdown" class="th-header-dropdown" tabindex="-1">
-            <el-dropdown-item command="modify-password"><span class="iconfont icon-edit"></span> Change Key</el-dropdown-item>
+            <el-dropdown-item command="modify-password"><span class="iconfont icon-edit"></span> Change Password</el-dropdown-item>
             <el-dropdown-item command="send-backup"><span class="iconfont icon-modify"></span> Send Backup</el-dropdown-item>
             <el-dropdown-item command="create-user" divided v-if="isAdmin"><span class="iconfont icon-collection"></span> Create User</el-dropdown-item>
           </el-dropdown-menu>
@@ -52,6 +52,7 @@
     </div>
     <record-editor ref="recordEditor" @refresh-list="refreshList" @patch-item="patchListItem"></record-editor>
     <user-creator ref="userCreator"></user-creator>
+    <change-password ref="changePassword"></change-password>
     <input type="text" id="copy-container" tabindex="-1" readonly>
   </div>
 </template>
@@ -59,14 +60,17 @@
 import axios from 'axios';
 import recordEditorView from '../components/recordEditor';
 import userCreatorView from '../components/userCreator';
-import { decryptObject, genRandomPassword } from '../utils/cipher';
+import changePasswordView from '../components/changePassword';
 
+import { genRandomPassword } from '../utils/index';
+import cipher from '../utils/cipher';
 const PAGE_SIZE = 10;
 
 export default {
   components: {
     'user-creator': userCreatorView,
-    'record-editor': recordEditorView
+    'record-editor': recordEditorView,
+    'change-password': changePasswordView
   },
   data() {
     return {
@@ -99,7 +103,7 @@ export default {
     handleHeadDropdown(cmd) {
       switch (cmd) {
         case 'modify-password':
-          this.$root.confirm('ToDo');
+          this.$refs.changePassword.open();
           break;
         case 'send-backup':
           this.sendBackup();
@@ -129,10 +133,17 @@ export default {
           totalNum: resp.data.totalNum,
           page: resp.data.page
         };
-        const newData = resp.data.data.map((item) => {
-          item.Data = decryptObject(item.Data, this.auth.password);
+        const decryptedKey = this.auth._decryptedKey;
+        const newData = await Promise.all(resp.data.data.map(async function(item) {
+          const json = await cipher.decryptText(item.Data, decryptedKey, item.IV);
+          if (item.Data.length > 0 && !json) {
+            throw new Error('decrypt object failed');
+          }
+          delete item.IV;
+          item.Data = JSON.parse(json);
           return item;
-        });
+        }));
+
         if (this.listCtr.page === 1) {
           this.listData = newData;
         } else {

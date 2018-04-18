@@ -35,20 +35,16 @@ export default {
       if (this.isSubmitting) {
         return;
       }
-      try {
-        this.error = false;
-        this.isSubmitting = true;
-        this.$store.commit('updateAuth', {
-          name: this.form.name,
-          password: this.form.password
-        });
-        await this.$store.dispatch('fetchUserInfo');
-        this.isSubmitting = false;
-      } catch (e) {
+      this.error = false;
+      this.isSubmitting = true;
+      const res = await this.$store.dispatch('login', {
+        name: this.form.name,
+        password: this.form.password
+      });
+      if (!res) {
         this.error = true;
-        this.isSubmitting = false;
-        this.$store.commit('updateAuth', null);
       }
+      this.isSubmitting = false;
     }
   }
 };

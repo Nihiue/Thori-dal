@@ -23,7 +23,8 @@
   </el-dialog>
 </template>
 <script>
-import { genUserToken } from '../utils/cipher';
+import { genUserToken } from '../utils/index';
+import cipher from '../utils/cipher';
 import axios from 'axios';
 export default {
   data() {
@@ -64,12 +65,18 @@ export default {
         this.isSubmitting = true;
         const payload = {};
         Object.keys(this.item).forEach((k) => {
-          if (k === 'Password') {
-            payload.Token = genUserToken(this.item.Name, this.item.Password);
-          } else {
+          if (k !== 'Password') {
             payload[k] = this.item[k];
           }
         });
+
+        payload.Token = await genUserToken(this.item.Name, this.item.Password);
+        const {data, iv} = await cipher.encryptText(cipher.genRandomKey(), this.item.Password, true);
+        payload.Key = {
+          Data: data,
+          IV: iv
+        };
+
         await axios.post('/api/users', payload);
         this.$root.success('User Created');
         this.isSubmitting = false;

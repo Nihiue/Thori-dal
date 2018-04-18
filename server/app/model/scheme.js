@@ -13,6 +13,16 @@ module.exports.User = new mongoose.Schema({
     type: String,
     required: true
   },
+  Key: {
+    Data: {
+      type: String,
+      required: true
+    },
+    IV: {
+      type: String,
+      required: true
+    }
+  },
   Email: {
     type: String,
     required: true
@@ -48,6 +58,10 @@ module.exports.Record = new mongoose.Schema({
   Data: {
     type: String,
     default: ''
+  },
+  IV: {
+    type: String,
+    required: true
   },
   Deleted: {
     type: Boolean,

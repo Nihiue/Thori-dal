@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
-import { getAccessToken, genUserToken } from '../utils/cipher';
+import { getAccessToken, genUserToken } from '../utils/index';
+import cipher from '../utils/cipher';
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
@@ -12,13 +13,14 @@ const store = new Vuex.Store({
     recordsList: []
   },
   mutations: {
+    updateAuthToken(state, data) {
+      if (state.auth) {
+        state.auth.token = data;
+      }
+    },
     updateAuth(state, data) {
       if (data) {
-        state.auth = {
-          name: data.name,
-          password: data.password,
-          token: genUserToken(data.name, data.password)
-        };
+        state.auth = data;
       } else {
         state.auth = null;
       }
@@ -31,6 +33,27 @@ const store = new Vuex.Store({
     }
   },
   actions: {
+    async login({ commit, dispatch, state }, { name, password }) {
+      try {
+        const token = await genUserToken(name, password);
+        commit('updateAuth', {
+          token,
+          name
+        });
+        await dispatch('fetchUserInfo', name);
+        const auth = {
+          ok: true,
+          token,
+          name
+        };
+        auth._decryptedKey = await cipher.decryptText(state.userInfo.Key.Data, password, state.userInfo.Key.IV, true);
+        commit('updateAuth', auth);
+        return true;
+      } catch (e) {
+        commit('updateAuth', null);
+        return false;
+      }
+    },
     async bonjour({ commit }) {
       const resp = await axios.get('/api/bonjour');
       commit('updateServerInfo', {
@@ -38,20 +61,20 @@ const store = new Vuex.Store({
         delta: resp.data.date - Date.now()
       });
     },
-    async fetchUserInfo({ commit, state }) {
-      const resp = await axios.get('/api/users/' + state.auth.name);
+    async fetchUserInfo({ commit, state }, name) {
+      const resp = await axios.get('/api/users/' + name);
       commit('updateUserInfo', resp.data);
     }
   }
 });
-axios.interceptors.request.use(function (config) {
+axios.interceptors.request.use(async function (config) {
   const state = store.state;
   if (state.auth && state.serverInfo) {
     if (!config.headers) {
       config.headers = {};
     }
     const serverTime = Date.now() + state.serverInfo.delta;
-    const accessToken = getAccessToken(state.auth.token, state.serverInfo.salt, serverTime);
+    const accessToken = await getAccessToken(state.auth.token, state.serverInfo.salt, serverTime);
     config.headers['X-Thoridal-Auth'] = [encodeURIComponent(state.auth.name), accessToken, serverTime].join('&');
   }
 

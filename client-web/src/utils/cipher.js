@@ -1,48 +1,126 @@
+function text2buffer(text) {
+  const encoder = new TextEncoder('utf-8');
+  return encoder.encode(text);
+}
+
+function buffer2text(buf) {
+  const decoder = new TextDecoder('utf-8');
+  return decoder.decode(buf);
+}
+
+function buffer2base64(buf) {
+  var binStr = Array.prototype.map.call(new Uint8Array(buf), function (ch) {
+    return String.fromCharCode(ch);
+  }).join('');
+  return btoa(binStr);
+}
+
+function base642buffer(base64) {
+  var binStr = atob(base64);
+  var iArr = new Uint8Array(binStr.length);
+  Array.prototype.forEach.call(binStr, function (ch, i) {
+    iArr[i] = ch.charCodeAt(0);
+  });
+  return iArr.buffer;
+}
+
+function genRandomKey() {
+  const buf = crypto.getRandomValues(new Uint8Array(32)).buffer;
+  return buffer2base64(buf);
+};
+
+const jsCipher = {
+  genRandomKey
+};
+const webCipher = {
+  genRandomKey
+};
+
 const CryptoJS = window.CryptoJS;
+const crypto = window.crypto;
 
-function sha256(str) {
-  return CryptoJS.SHA256(str).toString();
-};
-function encryptAES(str, key) {
-  return CryptoJS.AES.encrypt(str, key).toString();
-};
-function decryptAES(str, key) {
-  return CryptoJS.AES.decrypt(str, key).toString(CryptoJS.enc.Utf8);
+webCipher.sha256 = async function (text) {
+  const hash = await crypto.subtle.digest('SHA-256', text2buffer(text));
+  return buffer2base64(hash);
 };
 
-export function getAccessToken(token, salt, time) {
-  return sha256(`${token}|${salt}|${time}`);
-};
-
-export function genUserToken(name, password) {
-  const UserTokenSalt = '5083785e-9c1b-4a3b-a487-190e4409ad0d';
-  return sha256(`${name}|${UserTokenSalt}|${password}`);
-};
-
-export function encryptObject(obj, key) {
-  // add some noise
-  obj._ = genRandomPassword(Math.random() * 128);
-  return encryptAES(JSON.stringify(obj), key);
-}
-
-export function decryptObject(source, key) {
-  if (!source) {
-    return {};
+webCipher.encryptText = async (plainText, strKey, usePWD) => {
+  const ptUtf8 = text2buffer(plainText);
+  let rawKey;
+  if (usePWD) {
+    rawKey = await crypto.subtle.digest('SHA-256', text2buffer(strKey));
+  } else {
+    rawKey = base642buffer(strKey);
   }
-  let json = decryptAES(source, key);
-  if (source.length > 0 && !json) {
-    throw new Error('decrypt object failed');
-  }
-  const obj = JSON.parse(json);
-  delete obj._;
-  return obj;
-}
-
-export function genRandomPassword(length = 12) {
-  const RandomCharset = '!@#$%abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%';
-  let ret = '';
-  for (let i = 0; i < length; i++) {
-    ret += RandomCharset[Math.floor(Math.random() * RandomCharset.length)];
-  }
-  return ret;
+  const iv = crypto.getRandomValues(new Uint8Array(16));
+  const alg = {
+    name: 'AES-CBC',
+    iv: iv
+  };
+  const key = await crypto.subtle.importKey('raw', rawKey, alg, false, ['encrypt']);
+  const encBuffer = await crypto.subtle.encrypt(alg, key, ptUtf8);
+  return {
+    iv: buffer2base64(iv.buffer),
+    data: buffer2base64(encBuffer)
+  };
 };
+
+webCipher.decryptText = async (data, strKey, iv, usePWD) => {
+  let rawKey;
+  if (usePWD) {
+    rawKey = await crypto.subtle.digest('SHA-256', text2buffer(strKey));
+  } else {
+    rawKey = base642buffer(strKey);
+  }
+  const alg = {
+    name: 'AES-CBC',
+    iv: base642buffer(iv)
+  };
+  const key = await crypto.subtle.importKey('raw', rawKey, alg, false, ['decrypt']);
+  const ptBuffer = await crypto.subtle.decrypt(alg, key, base642buffer(data));
+  return buffer2text(ptBuffer);
+};
+
+jsCipher.sha256 = function (str) {
+  return CryptoJS.SHA256(str).toString(CryptoJS.enc.Base64);
+};
+
+jsCipher.encryptText = function (plainText, strKey, usePWD) {
+  let key;
+  if (usePWD) {
+    key = CryptoJS.SHA256(strKey);
+  } else {
+    key = CryptoJS.enc.Base64.parse(strKey);
+  }
+  const ivBuffer = crypto.getRandomValues(new Uint8Array(16)).buffer;
+  var iv = CryptoJS.enc.Base64.parse(buffer2base64(ivBuffer));
+  const encrypted = CryptoJS.AES.encrypt(plainText, key, {
+    mode: CryptoJS.mode.CBC,
+    iv: iv
+  });
+  return {
+    iv: iv.toString(CryptoJS.enc.Base64),
+    data: encrypted.toString()
+  };
+};
+
+jsCipher.decryptText = function (data, strKey, iv, usePWD) {
+  let key;
+  if (usePWD) {
+    key = CryptoJS.SHA256(strKey);
+  } else {
+    key = CryptoJS.enc.Base64.parse(strKey);
+  }
+  const decrypted = CryptoJS.AES.decrypt(data, key, {
+    mode: CryptoJS.mode.CBC,
+    iv: CryptoJS.enc.Base64.parse(iv)
+  });
+  return decrypted.toString(CryptoJS.enc.Utf8);
+};
+
+const IsWebCipherAvailable = Boolean(window.crypto && window.crypto.subtle);
+
+console.log('use web cipher:', IsWebCipherAvailable);
+const cipher = IsWebCipherAvailable ? webCipher : jsCipher;
+
+export default cipher;

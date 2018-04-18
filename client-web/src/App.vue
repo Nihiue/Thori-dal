@@ -59,6 +59,13 @@ export default {
         center: true
       });
     },
+    error(message) {
+      this.$message({
+        message,
+        type: 'error',
+        center: true
+      });
+    },
     errorLogger(e, title) {
       this.$notify.error({
         title: title || 'Error',
@@ -68,7 +75,7 @@ export default {
   },
   computed: {
     activeComponent() {
-      if (this.$store.state.userInfo) {
+      if (this.$store.state.auth && this.$store.state.auth.ok) {
         return 'thoridal-list';
       }
       return 'thoridal-login';

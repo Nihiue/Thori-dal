@@ -2,8 +2,15 @@ const router = require('koa-router')();
 const utils = require('../utils');
 router
   .get('/:name', async (ctx) => {
-    let user = await ctx.model.User.findById(ctx.user._id).select('Name AdminFlag').exec();
+    let user = await ctx.model.User.findById(ctx.user._id).select('Name AdminFlag Key').exec();
     ctx.body = user;
+  })
+  .put('/:name', async (ctx) => {
+    await ctx.model.User.update({_id: ctx.user._id}, {
+      Key: ctx.request.body.Key,
+      Token: ctx.request.body.Token
+    });
+    ctx.status = 200;
   })
   .post('/', async (ctx) => {
     try {
@@ -18,13 +25,13 @@ router
         });
       }
     } catch (e) {
-      ctx.throw(400, 'user already exist.');
+      ctx.throw(400, 'cannot create user');
     }
   })
   .post('/sendBackup', async (ctx) => {
     try {
-      let user = await ctx.model.User.findById(ctx.user._id).select('Name Email').exec();
-      let records = await ctx.model.Record.find({ Creator: user._id, Deleted: false }).select('Name Type LastUpdate Data').exec();
+      let user = await ctx.model.User.findById(ctx.user._id).select('Name Email Key Token').exec();
+      let records = await ctx.model.Record.find({ Creator: user._id, Deleted: false }).select('Name IV Type LastUpdate Data').exec();
       if (!user || !user.Email) {
         return ctx.throw(400, 'no email address.');
       }
@@ -32,7 +39,7 @@ router
       const emailText = JSON.stringify({
         records,
         exportDate: now.valueOf(),
-        userID: user._id
+        user
       });
       await utils.sendEmail({
         account: ctx.config.emailSender,

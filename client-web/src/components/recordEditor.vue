@@ -32,7 +32,7 @@
   </el-dialog>
 </template>
 <script>
-import { encryptObject } from '../utils/cipher';
+import cipher from '../utils/cipher';
 import axios from 'axios';
 export default {
   data() {
@@ -86,9 +86,12 @@ export default {
       });
       try {
         this.isSubmitting = true;
+        const decryptedKey = this.auth._decryptedKey;
+        const {data, iv} = await cipher.encryptText(JSON.stringify(this.item.Data), decryptedKey);
         const payload = {
           Name: this.item.Name.trim(),
-          Data: encryptObject(this.item.Data, this.auth.password)
+          Data: data,
+          IV: iv
         };
         if (this.item._id) {
           await this.saveRecord(this.item._id, payload);

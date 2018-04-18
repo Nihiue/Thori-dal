@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 module.exports.getAccessToken = function (token, salt, time) {
   let hash = crypto.createHash('sha256');
   hash.update(`${token}|${salt}|${time}`, 'utf8');
-  return hash.digest('hex');
+  return hash.digest('base64');
 };
 
 function getIP(ctx) {
