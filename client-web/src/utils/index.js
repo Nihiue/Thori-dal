@@ -1,7 +1,5 @@
 import cipher from './cipher';
 
-window.test = cipher;
-
 export async function getAccessToken(token, salt, time) {
   const ret = await cipher.sha256(`${token}|${salt}|${time}`);
   return ret;
