@@ -127,12 +127,6 @@ export default {
             Type: 0
           }
         });
-        this.listCtr = {
-          isRequesting: false,
-          total: Math.ceil(resp.data.totalNum / PAGE_SIZE),
-          totalNum: resp.data.totalNum,
-          page: resp.data.page
-        };
         const decryptedKey = this.auth._decryptedKey;
         const newData = await Promise.all(resp.data.data.map(async function(item) {
           const json = await cipher.decryptText(item.Data, decryptedKey, item.IV);
@@ -149,6 +143,12 @@ export default {
         } else {
           this.listData = this.listData.concat(newData);
         }
+        this.listCtr = {
+          isRequesting: false,
+          total: Math.ceil(resp.data.totalNum / PAGE_SIZE),
+          totalNum: resp.data.totalNum,
+          page: resp.data.page
+        };
       } catch (e) {
         this.listCtr.isRequesting = false;
         this.$root.errorLogger(e, 'Unable to fetch data');
