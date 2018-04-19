@@ -75,7 +75,7 @@
   },
   "browserslist": [
     "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
+    "not IE 11",
+    "not Samsung < 6"
   ]
 }
