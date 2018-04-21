@@ -1,6 +1,6 @@
 
 # Thori-dal
-> A password book application based on client-side encryption.
+> Accounts and passwords management tool based on client-side encryption
 
 
 ## Client-Web
