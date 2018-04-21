@@ -4,14 +4,7 @@
 
 const path = require('path')
 
-let apiProxyTarget;
-
-try {
-  apiProxyTarget = require('./api-target');
-} catch (e) {
-  console.log(e);
-  apiProxyTarget = 'http://localhost:3000'
-}
+let apiProxyTarget = 'http://localhost:3000';
 
 function generateProxyTable(target, pathList) {
   const ret = {};
