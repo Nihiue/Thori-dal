@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <component :is="activeComponent"></component>
+    <input type="text" id="copy-container" tabindex="-1" readonly>
   </div>
 </template>
 
@@ -25,11 +26,19 @@ export default {
         this.errorLogger(e, 'Unable to fetch server info');
       }
     },
+    copyText(text) {
+      const el = this.$el.querySelector('#copy-container');
+      el.value = text;
+      el.select();
+      if (window.document.execCommand('copy')) {
+        this.success('Copied');
+      }
+    },
     checkHttps() {
       if (location.protocol === 'https:') {
         return;
       }
-      const url = new URL('./static/thori_dal.jpg', location.href);
+      const url = new URL('./static/favicon.png?t=' + Date.now(), location.href);
       url.protocol = 'https:';
       const el = document.createElement('img');
       el.addEventListener('load', async () => {
@@ -85,7 +94,12 @@ export default {
 </script>
 
 <style>
-#app {
-
+#copy-container {
+  width: 10px;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 </style>

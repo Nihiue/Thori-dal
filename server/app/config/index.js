@@ -1,10 +1,10 @@
 const credential = require('./credential');
+const crypto = require('crypto');
 
 const config = {
   port: 3000,
-  hashSalt: '6ebb3812-5ad4-46bd-b73c-1bfefadb317f'
+  hashSalt: Buffer.from(crypto.randomFillSync(new Uint8Array(32))).toString('base64')
 };
-
 
 Object.keys(credential).forEach(function (k) {
   config[k] = credential[k];

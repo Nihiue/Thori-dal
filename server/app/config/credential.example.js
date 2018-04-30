@@ -1,6 +1,3 @@
-/*
-  This Is Example Config File
-*/
 module.exports = {
   mongoUrl: 'mongodb://user:pwd@db_ip:db_port/db_name',
   emailSender: {
@@ -8,5 +5,6 @@ module.exports = {
     pwd: 'email_pwd',
     email: 'email_user_name@foo.bar',
     smtp_address: 'smtp.foo.bar'
-  }
+  },
+  sysAlertEmail: 'foo@bar.com'
 };

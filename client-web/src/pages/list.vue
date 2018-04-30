@@ -29,11 +29,11 @@
           </div>
         </div>
         <div class="info-container">
-          <p @click="copyText(item.Data.Account)" v-if="item.Data.Account">
+          <p @click="$root.copyText(item.Data.Account)" v-if="item.Data.Account">
             <span class="iconfont icon-account"></span>{{item.Data.Account}}</p>
-          <p @click="copyText(item.Data.Password)" v-if="item.Data.Password">
+          <p @click="$root.copyText(item.Data.Password)" v-if="item.Data.Password">
             <span class="iconfont icon-password"></span><span class="iconfont pwd-mask" v-html="('&#xe64c;').repeat(item.Data.Password.length)"></span></p>
-          <p @click="copyText(item.Data.Link)" v-if="item.Data.Link">
+          <p @click="$root.copyText(item.Data.Link)" v-if="item.Data.Link">
             <span class="iconfont icon-link"></span>{{item.Data.Link}}</p>
         </div>
         <el-collapse v-if="item.Data.Fields && item.Data.Fields.length > 0">
@@ -53,7 +53,6 @@
     <record-editor ref="recordEditor" @refresh-list="refreshList" @patch-item="patchListItem"></record-editor>
     <user-creator ref="userCreator"></user-creator>
     <change-password ref="changePassword"></change-password>
-    <input type="text" id="copy-container" tabindex="-1" readonly>
   </div>
 </template>
 <script>
@@ -190,14 +189,6 @@ export default {
     },
     openEditRecord(item) {
       this.$refs.recordEditor.open(JSON.parse(JSON.stringify(item)));
-    },
-    async copyText(text) {
-      const el = this.$el.querySelector('#copy-container');
-      el.value = text;
-      el.select();
-      if (window.document.execCommand('copy')) {
-        this.$root.success('Copied');
-      }
     }
   },
   computed: {
@@ -323,14 +314,6 @@ export default {
         display: block;
         font-size: 120px;
       }
-    }
-    #copy-container {
-      width: 10px;
-      opacity: 0;
-      pointer-events: none;
-      position: absolute;
-      left: 0;
-      top: 0;
     }
   }
   .th-header-dropdown {
