@@ -57,6 +57,6 @@ router
     } catch (e) {
       ctx.throw(400, e);
     }
-  })
+  });
 
 module.exports = router;

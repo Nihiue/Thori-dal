@@ -1,5 +1,4 @@
 const router = require('koa-router')();
-const model = require('../model');
 router
   .get('/', async (ctx) => {
     const query = { Creator: ctx.user._id, Deleted: false };

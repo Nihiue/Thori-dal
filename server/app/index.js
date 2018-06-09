@@ -7,7 +7,7 @@ const path = require('path');
 
 global._ = require('lodash');
 
-async function startApp(params) {
+async function startApp() {
   try {
     const app = new Koa();
     await model.connect(config.mongoUrl);

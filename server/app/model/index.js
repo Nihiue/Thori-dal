@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const scheme = require('./scheme');
 
 class Model {
-  constructor(option) {
+  constructor() {
     this.User = mongoose.model('User', scheme.User);
     this.Record = mongoose.model('Record', scheme.Record);
     this.Log = mongoose.model('Log', scheme.Log);
@@ -15,6 +15,6 @@ class Model {
       db.once('error', reject);
     });
   }
-};
+}
 
 module.exports = new Model();

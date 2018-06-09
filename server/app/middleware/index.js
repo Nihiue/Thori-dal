@@ -52,7 +52,7 @@ module.exports.authMW = function () {
       user: decodeURIComponent(reqAuth[0]),
       accessToken: reqAuth[1],
       time: parseInt(reqAuth[2], 10)
-    }
+    };
 
     if (isNaN(clientAuth.time) || Math.abs(clientAuth.time - Date.now()) > 5000) {
       return deny(ctx);
@@ -67,5 +67,5 @@ module.exports.authMW = function () {
     ctx.user = user.toObject();
     await next();
 
-  }
-}
+  };
+};

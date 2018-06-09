@@ -17,7 +17,7 @@ router
     ctx.body = {
       date: Date.now(),
       salt: ctx.config.hashSalt
-    }
+    };
   });
 
 loadRoutes(router, ['/users', '/records']);

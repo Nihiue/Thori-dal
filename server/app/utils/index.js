@@ -20,7 +20,7 @@ module.exports.createLog = async function(ctx, data) {
   data.IP = getIP(ctx);
   data.User = ctx.user ? ctx.user._id : '';
   await ctx.model.Log.create(data);
-}
+};
 
 module.exports.sendEmail = function ({account, to, subject, text}) {
   return new Promise(function (resolve, reject) {
@@ -45,7 +45,7 @@ module.exports.sendEmail = function ({account, to, subject, text}) {
         reject(error);
         return;
       }
-      resolve();
+      resolve(info);
     });
   });
-}
+};

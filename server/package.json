@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "app/index.js",
   "scripts": {
-    "dev": "powershell \"$env:NODE_ENV='development'; nodemon --watch app app/index.js\""
+    "dev": "NODE_ENV=development nodemon --watch app app/index.js",
+    "dev-win": "powershell \"$env:NODE_ENV='development'; nodemon --watch app app/index.js\"",
+    "lint": "eslint app"
   },
   "author": "Wanglei (Nihiue@gmail.com)",
   "license": "ISC",
@@ -17,12 +19,8 @@
     "nodemailer": "^4.6.4"
   },
   "devDependencies": {
-    "koa": "^2.5.0",
-    "koa-router": "^7.4.0",
-    "koa-static": "^4.0.2",
-    "lodash": "^4.17.5",
-    "mongoose": "^5.0.14",
-    "koa-bodyparser": "^4.2.0"
+    "eslint": "^4.19.1",
+    "eslint-config-recommended": "^2.0.0"
   },
   "description": ""
 }
