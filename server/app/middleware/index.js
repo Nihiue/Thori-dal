@@ -3,6 +3,7 @@ const utils = require('../utils');
 module.exports.authMW = function () {
 
   let deniedReqs = [];
+  let lastAlertTime = 0;
 
   function deny(ctx) {
     const now = Date.now();
@@ -12,7 +13,7 @@ module.exports.authMW = function () {
       IP: utils.getIP(ctx),
       AuthHeader: ctx.request.header['x-thoridal-auth'],
     });
-    if (deniedReqs.length >= 10) {
+    if (deniedReqs.length >= 10 && Date.now() - lastAlertTime > 180 * 1000) {
       deniedReqs = deniedReqs.filter(function(item) {
         return item.Time > now - 3600000;
       });
@@ -22,6 +23,7 @@ module.exports.authMW = function () {
           return item;
         });
         deniedReqs = [];
+        lastAlertTime = Date.now();
         utils.sendEmail({
           account: ctx.config.emailSender,
           subject: 'Thori\'dal Access Alert',
