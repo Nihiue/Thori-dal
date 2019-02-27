@@ -137,7 +137,7 @@ export default {
           return item;
         }));
 
-        if (this.listCtr.page === 1) {
+        if (resp.data.page === 1) {
           this.listData = newData;
         } else {
           this.listData = this.listData.concat(newData);
