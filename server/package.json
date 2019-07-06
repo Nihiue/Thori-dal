@@ -22,5 +22,9 @@
     "eslint": "^4.19.1",
     "eslint-config-recommended": "^2.0.0"
   },
-  "description": ""
+  "description": "",
+  "bin": "app/index.js",
+  "pkg": {
+    "scripts":"app/**/*.js"
+  }
 }
