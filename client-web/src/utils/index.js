@@ -14,10 +14,7 @@ export async function genUserToken(name, password) {
 };
 
 export function genRandomPassword(length = 12) {
-  const RandomCharset = '!@#$%abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%';
-  let ret = '';
-  for (let i = 0; i < length; i++) {
-    ret += RandomCharset[Math.floor(Math.random() * RandomCharset.length)];
-  }
-  return ret;
+  const RandomCharset = '!@#$%^&*()[]<>abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+  const vec = Array.from(crypto.getRandomValues(new Uint8Array(length)));
+  return vec.map(v => RandomCharset[Math.floor(v / 255 * RandomCharset.length)]).join('');
 };
