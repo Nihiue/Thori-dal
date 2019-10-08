@@ -47,7 +47,7 @@ export default {
       this.isSubmitting = false;
     }
   },
-  computed() {
+  computed: {
     readyToLogin() {
       return this.$store.getters.readyToLogin;
     }
