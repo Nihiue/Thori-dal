@@ -65,6 +65,11 @@ const store = new Vuex.Store({
       const resp = await axios.get('/api/users/' + name);
       commit('updateUserInfo', resp.data);
     }
+  },
+  getters: {
+    readyToLogin(state) {
+      return Boolean(state.serverInfo);
+    }
   }
 });
 axios.interceptors.request.use(async function (config) {
