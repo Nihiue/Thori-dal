@@ -10,7 +10,7 @@
           <el-input v-model="form.password" name="thoridal-acesstoken" type="password" prefix-icon="iconfont icon-password" required></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" native-type="submit" style="width: 100%" :loading="isSubmitting">Login</el-button>
+          <el-button type="primary" native-type="submit" style="width: 100%" :loading="!readyToLogin || isSubmitting">Login</el-button>
         </el-form-item>
       </el-form>
       <el-alert v-show="error" title="Login Failed" type="error" :closable="false"></el-alert>
@@ -45,6 +45,11 @@ export default {
         this.error = true;
       }
       this.isSubmitting = false;
+    }
+  },
+  computed() {
+    readyToLogin() {
+      return this.$store.getters.readyToLogin;
     }
   }
 };
