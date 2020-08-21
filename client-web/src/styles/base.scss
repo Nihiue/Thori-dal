@@ -6,6 +6,11 @@ body {
   overflow-y: scroll;
 }
 
+@font-face {
+  font-family: "iceland";
+  src: url('./static/Iceland-Regular.ttf');
+}
+
 .container {
   max-width: 768px;
   margin: 0 auto;
