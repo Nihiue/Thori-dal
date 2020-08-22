@@ -74,8 +74,7 @@ export default {
     }
     h1 {
       font-family: "iceland";
-      text-shadow: 1px 1px 6px #ddd;
-      font-size: 28px;
+      font-size: 32px;
       font-weight: normal;
       text-align: center;
       margin-bottom: 50px;
