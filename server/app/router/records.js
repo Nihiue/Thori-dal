@@ -15,7 +15,7 @@ router
     if (typeof ctx.query.Type !== 'undefined') {
       query.Type = Number(ctx.query.Type);
     }
-    const totalNum = await ctx.model.Record.count(query).exec();
+    const totalNum = await ctx.model.Record.countDocuments(query).exec();
     const res = await ctx.model.Record.find(query).limit(pageSize).skip((page - 1) * pageSize).sort('-_id').select('Name Type LastUpdate Data IV').exec();
     ctx.body = {
       data: res,

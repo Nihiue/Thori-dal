@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 const scheme = require('./scheme');
 
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useUnifiedTopology', true);
+
 class Model {
   constructor() {
     this.User = mongoose.model('User', scheme.User);
