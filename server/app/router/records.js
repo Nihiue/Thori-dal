@@ -38,7 +38,7 @@ router
     ctx.body = res;
   })
   .put('/:id', async (ctx) => {
-    await ctx.model.Record.update({ _id: ctx.params.id, Deleted: false, Creator: ctx.user._id }, {
+    await ctx.model.Record.updateOne({ _id: ctx.params.id, Deleted: false, Creator: ctx.user._id }, {
       Name: ctx.request.body.Name,
       Data: ctx.request.body.Data,
       IV: ctx.request.body.IV,
@@ -47,7 +47,7 @@ router
     ctx.status = 200;
   })
   .delete('/:id', async (ctx) => {
-    await ctx.model.Record.update({ _id: ctx.params.id, Creator: ctx.user._id }, {
+    await ctx.model.Record.updateOne({ _id: ctx.params.id, Creator: ctx.user._id }, {
       Deleted: true
     });
     ctx.status = 200;

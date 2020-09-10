@@ -10,13 +10,13 @@
   "author": "Wanglei (Nihiue@gmail.com)",
   "license": "ISC",
   "dependencies": {
-    "koa": "^2.5.0",
-    "koa-bodyparser": "^4.2.0",
-    "koa-router": "^7.4.0",
-    "koa-static": "^4.0.2",
-    "lodash": "^4.17.5",
-    "mongoose": "^5.0.14",
-    "nodemailer": "^4.6.4"
+    "koa": "^2.13.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-router": "^9.4.0",
+    "koa-static": "^4.0.3",
+    "lodash": "^4.17.20",
+    "mongoose": "^5.10.0",
+    "nodemailer": "^4.6.8"
   },
   "devDependencies": {
     "eslint": "^4.19.1",

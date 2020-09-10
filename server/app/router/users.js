@@ -6,7 +6,7 @@ router
     ctx.body = user;
   })
   .put('/:name', async (ctx) => {
-    await ctx.model.User.update({_id: ctx.user._id}, {
+    await ctx.model.User.updateOne({_id: ctx.user._id}, {
       Key: ctx.request.body.Key,
       Token: ctx.request.body.Token
     });
