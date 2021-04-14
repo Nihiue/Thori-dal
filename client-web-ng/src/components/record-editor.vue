@@ -13,6 +13,7 @@
         <el-form-item>
           <el-input
             v-model="item.Name"
+            placeholder="Name"
             prefix-icon="iconfont icon-search-name"
             spellcheck="false"
           ></el-input>
@@ -20,6 +21,7 @@
         <el-form-item>
           <el-input
             v-model="item.Data.Account"
+            placeholder="Account"
             prefix-icon="iconfont icon-account"
             spellcheck="false"
           ></el-input>
@@ -27,32 +29,44 @@
         <el-form-item>
           <el-input
             v-model="item.Data.Password"
+            placeholder="Password"
             prefix-icon="iconfont icon-password"
             spellcheck="false"
           ></el-input>
         </el-form-item>
         <el-form-item>
           <el-input
+            v-model="item.Data.TOTP"
+            placeholder="TOTP Secret"
+            prefix-icon="iconfont icon-otp"
+            spellcheck="false"
+          ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-input
             v-model="item.Data.Link"
+            placeholder="Link"
             prefix-icon="iconfont icon-link"
             spellcheck="false"
           ></el-input>
         </el-form-item>
         <div class="custom-field">
           <div
-            v-for="(filed, fIdx) in item.Data.Fields"
+            v-for="(field, fIdx) in item.Data.Fields"
             :key="fIdx"
             class="custom-field-item"
           >
             <el-input
-              v-model="filed.Name"
+              v-model="field.Name"
+              placeholder="Field Name"
               size="small"
               prefix-icon="iconfont icon-accessory"
               spellcheck="false"
             ></el-input>
             <el-input
               type="textarea"
-              v-model="filed.Value"
+              v-model="field.Value"
+              placeholder="Field Value"
               rows="4"
               spellcheck="false"
             ></el-input>

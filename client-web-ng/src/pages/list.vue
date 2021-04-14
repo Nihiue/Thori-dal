@@ -87,6 +87,9 @@
               v-html="'&#xe64c;'.repeat(item.Data.Password.length)"
             ></span>
           </p>
+          <p @click="$root.copyText(item.Runtime.TOTPCode)" v-if="item.Runtime.TOTPCode">
+            <span class="iconfont icon-otp"></span>{{ item.Runtime.TOTPCode }}
+          </p>
           <p @click="$root.copyText(item.Data.Link)" v-if="item.Data.Link">
             <span class="iconfont icon-link"></span>{{ item.Data.Link }}
           </p>
@@ -134,6 +137,7 @@ import userCreatorView from "../components/user-creator.vue";
 import changePasswordView from "../components/change-password.vue";
 
 import { genRandomPassword } from "../utils/index";
+import genTotpCode from "../utils/totp";
 import cipher from "../utils/cipher";
 const PAGE_SIZE = 10;
 
@@ -157,6 +161,17 @@ export default {
   },
   mounted() {
     this.fetchRecordList(1);
+    window.setInterval(async () => {
+      const serverNow = this.$store.state.serverInfo.delta + Date.now();
+      const data = this.listData;
+      if (data.length > 0 && Math.floor(serverNow / 1000) % 30 < 5) {
+        for (let i = 0; i < data.length; i += 1) {
+          if (data[i].Data.TOTP) {
+            data[i].Runtime.TOTPCode = await genTotpCode(data[i].Data.TOTP, serverNow);
+          }
+        }
+      }
+    }, 5100);
   },
   methods: {
     async refreshList() {
@@ -199,6 +214,7 @@ export default {
           },
         });
         const decryptedKey = this.auth._decryptedKey;
+        const serverNow = this.$store.state.serverInfo.delta + Date.now();
         const newData = await Promise.all(
           resp.data.data.map(async function (item) {
             const json = await cipher.decryptText(
@@ -210,7 +226,11 @@ export default {
               throw new Error("decrypt object failed");
             }
             delete item.IV;
+
             item.Data = JSON.parse(json);
+            item.Runtime = {
+              TOTPCode: item.Data.TOTP ? await genTotpCode(item.Data.TOTP, serverNow) : ''
+            };
             return item;
           })
         );
