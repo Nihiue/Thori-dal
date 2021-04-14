@@ -44,6 +44,28 @@ webCipher.sha256 = async function (text) {
   return buffer2base64(hash);
 };
 
+webCipher.hmacSha1 = async function (msgUintArr, keyUintArr) {
+
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw',
+    keyUintArr,
+    {
+      name: 'HMAC',
+      hash: 'SHA-1'
+    },
+    false,
+    ['sign']
+  );
+
+  const result = await crypto.subtle.sign(
+    'HMAC',
+    cryptoKey,
+    msgUintArr
+  );
+
+  return new Uint8Array(result);
+};
+
 webCipher.encryptText = async (plainText, strKey, usePWD) => {
   const ptUtf8 = text2buffer(plainText);
   let rawKey;
@@ -83,6 +105,26 @@ webCipher.decryptText = async (data, strKey, iv, usePWD) => {
 
 jsCipher.sha256 = function (str) {
   return CryptoJS.SHA256(str).toString(CryptoJS.enc.Base64);
+};
+
+jsCipher.hmacSha1 = function (msgUintArr, keyUintArr) {
+
+  function hexToUint8(hex) {
+    const ret = new Uint8Array(hex.length / 2);
+    for (let i = 0; i < hex.length; i += 2) {
+      ret[i / 2] = parseInt(hex.substr(i, 2), 16);
+    }
+    return ret;
+  }
+
+  function uint8ToStr(uint8) {
+    return [].map.call(uint8, i => String.fromCharCode(i)).join('');
+  }
+
+  const msg = uint8ToStr(msgUintArr);
+  const key = uint8ToStr(keyUintArr);
+
+  return hexToUint8(CryptoJS.HmacSHA1(msg, key).toString(CryptoJS.enc.hex));
 };
 
 jsCipher.encryptText = function (plainText, strKey, usePWD) {
