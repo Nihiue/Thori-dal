@@ -65,8 +65,7 @@ export default {
       if (this.isSubmitting) {
         return;
       }
-      const form = this.$el.querySelector("form");
-      if (!form.reportValidity()) {
+      if (!this.$refs.form.$el.reportValidity()) {
         return;
       }
 

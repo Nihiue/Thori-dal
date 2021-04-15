@@ -12,16 +12,16 @@ function base32ToUint8(base32) {
   const base32chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
   let bits = '';
 
+  if ((base32.length * 5) % 8 !== 0) {
+    throw new Error('invalid base32 length');
+  }
+
   for (let i = 0; i < base32.length; i += 1) {
     const val = base32chars.indexOf(base32.charAt(i).toUpperCase());
     if (val === -1) {
-      throw new Error('invalid base32');
+      throw new Error('invalid base32 char');
     }
     bits += val.toString(2).padStart(5, '0');
-  }
-
-  if (bits % 8 !== 0) {
-    throw new Error('invalid base32');
   }
 
   const ret = new Uint8Array(bits.length / 8);
@@ -46,15 +46,16 @@ export default async function generateCode(key, now = Date.now()) {
   try {
     hash = await cipher.hmacSha1(hexToUint8(time), base32ToUint8(key.trim()));
   } catch (e) {
-    return '';
+    console.error(e.toString());
+    return 'ERROR';
   }
 
   const offset = hash[hash.length - 1] & 0xf;
   const binary =
-   ((hash[offset] & 0x7f) << 24) |
-   ((hash[offset + 1] & 0xff) << 16) |
-   ((hash[offset + 2] & 0xff) << 8) |
-   (hash[offset + 3] & 0xff);
+    ((hash[offset] & 0x7f) << 24) |
+    ((hash[offset + 1] & 0xff) << 16) |
+    ((hash[offset + 2] & 0xff) << 8) |
+    (hash[offset + 3] & 0xff);
   const otp = (binary % DIGITS_POWER[CODE_DIGITS]).toString();
 
   return otp.padStart(CODE_DIGITS, '0');

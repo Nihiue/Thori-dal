@@ -87,7 +87,10 @@
               v-html="'&#xe64c;'.repeat(item.Data.Password.length)"
             ></span>
           </p>
-          <p @click="$root.copyText(item.Runtime.TOTPCode)" v-if="item.Runtime.TOTPCode">
+          <p
+            @click="$root.copyText(item.Runtime.TOTPCode)"
+            v-if="item.Runtime.TOTPCode"
+          >
             <span class="iconfont icon-otp"></span>{{ item.Runtime.TOTPCode }}
           </p>
           <p @click="$root.copyText(item.Data.Link)" v-if="item.Data.Link">
@@ -167,7 +170,10 @@ export default {
       if (data.length > 0 && Math.floor(serverNow / 1000) % 30 < 5) {
         for (let i = 0; i < data.length; i += 1) {
           if (data[i].Data.TOTP) {
-            data[i].Runtime.TOTPCode = await genTotpCode(data[i].Data.TOTP, serverNow);
+            data[i].Runtime.TOTPCode = await genTotpCode(
+              data[i].Data.TOTP,
+              serverNow
+            );
           }
         }
       }
@@ -263,15 +269,17 @@ export default {
         this.$root.errorLogger(e, "Unable to send backup");
       }
     },
-    patchListItem({ id, data }) {
+    async patchListItem({ id, data }) {
       const item = this.listData.find(function (item) {
         return item._id === id;
       });
       if (!item) {
         return;
       }
+      const serverNow = this.$store.state.serverInfo.delta + Date.now();
       item.Name = data.Name;
       item.Data = data.Data;
+      item.Runtime.TOTPCode = item.Data.TOTP ? await genTotpCode(TOTPCode, serverNow) : '';
     },
     async deleteRecord(item, index) {
       const isConfirm = await this.$root.confirm(`Delete ${item.Name} ?`);

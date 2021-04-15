@@ -5,14 +5,14 @@
 
 ## Client-Web
 
-- Using vue.js
+- Vue.js
 - Mobile friendly
 - Protect data with AES-256-CBC
-- Prefer https, also support http
+- TOTP(2FA, Google Authenticator) Support
 
 ## Server
 
-- Using Koa & Mongodb
+- Koa & Mongodb
 - Only transfer encrypted data to server, you data is safe even if server is compromised
 
 ### Config db
