@@ -279,7 +279,7 @@ export default {
       const serverNow = this.$store.state.serverInfo.delta + Date.now();
       item.Name = data.Name;
       item.Data = data.Data;
-      item.Runtime.TOTPCode = item.Data.TOTP ? await genTotpCode(TOTPCode, serverNow) : '';
+      item.Runtime.TOTPCode = item.Data.TOTP ? await genTotpCode(item.Data.TOTP, serverNow) : '';
     },
     async deleteRecord(item, index) {
       const isConfirm = await this.$root.confirm(`Delete ${item.Name} ?`);
