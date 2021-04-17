@@ -12,6 +12,7 @@
           <el-input
             v-model="form.name"
             name="thoridal-username"
+            autocomplete="username"
             prefix-icon="iconfont icon-account"
             required
           ></el-input>
@@ -20,6 +21,7 @@
           <el-input
             v-model="form.password"
             name="thoridal-acesstoken"
+            autocomplete="current-password"
             type="password"
             prefix-icon="iconfont icon-password"
             required
