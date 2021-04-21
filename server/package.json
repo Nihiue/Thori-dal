@@ -25,6 +25,6 @@
   "description": "",
   "bin": "app/index.js",
   "pkg": {
-    "scripts":"app/**/*.js"
+    "scripts": "app/**/*.js"
   }
 }

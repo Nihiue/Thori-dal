@@ -15,24 +15,29 @@
 - Koa & Mongodb
 - Only transfer encrypted data to server, you data is safe even if server is compromised
 
-### Config db
+## Deploy
 
-- Rename `server/app/config/credential.example.js` to `credential.js`
-- Edit it
+Requirements:
+ - docker
+ - docker-compose
 
-### Create Root User
-
-- Edit `server/app/createRootUser.js`
-- Run it
-
-
-### Deploy client-web
-
+### Build Service
 ```
-cd client-web
-node build/build.js
-cd ./dist
-mv -f * ../../server/public/
+$ cd deploy
+$ sudo docker-compose -p thoridal build
+```
+
+### Run Service
+```
+$ cd deploy
+$ sudo docker-compose -p thoridal up -d
+```
+Open http://localhost:3000/ in browser, login with `root` `root_pwd`
+
+### Stop Service
+```
+$ cd deploy
+$ sudo docker-compose -p thoridal down
 ```
 
 ## Screenshots

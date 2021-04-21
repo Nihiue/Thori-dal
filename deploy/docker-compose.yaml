@@ -1,0 +1,29 @@
+version: "3.4"
+volumes:
+  thoridal-mongo-data:
+services:
+  mongodb:
+    image: mongo:3.6.18-xenial
+    restart: always
+    expose:
+      - 16839
+    volumes:
+      - thoridal-mongo-data:/data/db
+      - ./mongod.conf:/etc/mongo.conf:ro
+    environment:
+        MONGO_INITDB_ROOT_USERNAME: thoruser
+        MONGO_INITDB_ROOT_PASSWORD: 292ebff20f50
+    entrypoint: ["docker-entrypoint.sh", "--config", "/etc/mongo.conf"]
+
+
+  server:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - mongodb
+    ports:
+        - 3000:3000
+    volumes:
+      - ./config.credential.js:/server/app/config/credential.js:ro

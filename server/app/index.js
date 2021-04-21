@@ -4,7 +4,7 @@ const router = require('./router');
 const model = require('./model');
 const bodyParser = require('koa-bodyparser');
 const path = require('path');
-
+const { createRootUser } = require('./utils/root');
 global._ = require('lodash');
 
 async function startApp() {
@@ -26,6 +26,8 @@ async function startApp() {
     app.listen(config.port);
 
     console.log('listening on', config.port);
+
+    createRootUser(model, config.rootUser);
 
   } catch (e) {
     console.log('Error', e);

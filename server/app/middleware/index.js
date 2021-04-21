@@ -24,12 +24,17 @@ module.exports.authMW = function () {
         });
         deniedReqs = [];
         lastAlertTime = Date.now();
-        utils.sendEmail({
-          account: ctx.config.emailSender,
-          subject: 'Thori\'dal Access Alert',
-          text: JSON.stringify(data, null, 2),
-          to: ctx.config.sysAlertEmail
-        });
+        if (ctx.config.emailSender.enable) {
+          utils.sendEmail({
+            account: ctx.config.emailSender,
+            subject: 'Thori\'dal Access Alert',
+            text: JSON.stringify(data, null, 2),
+            to: ctx.config.sysAlertEmail
+          });
+        } else {
+          console.log('Unable to send mail');
+        }
+
       }
     }
     ctx.throw(401);

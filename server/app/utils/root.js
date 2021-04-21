@@ -1,12 +1,4 @@
-const config = require('./config');
-const model = require('./model');
 const crypto = require('crypto');
-
-const rootUser = {
-  name: 'root',
-  pwd: 'root_pwd',
-  email: 'root@foo.bar'
-};
 
 function sha256(str) {
   return crypto.createHash('sha256').update(str, 'utf8').digest();
@@ -34,31 +26,28 @@ function genUserToken(name, password) {
   return sha256(`${name}|${salt2}|${hashedPassword}`).toString('base64');
 }
 
-async function start(cfg) {
+module.exports.createRootUser = async function (model, { name, password, email }) {
   try {
-    if (!cfg.name || !cfg.pwd || !cfg.email) {
-      throw new Error('bad cfg');
+    if (!name || !password || !email) {
+      throw new Error('invalid config');
     }
-    await model.connect(config.mongoUrl);
-
     const anyExistUser = await model.User.findOne({ AdminFlag: true }).select('_id').exec();
     if (anyExistUser) {
-      throw new Error('root already exists');
+      return false;
     }
 
     const newUser = {
-      Name: cfg.name,
+      Name: name,
       AdminFlag: true,
-      Email: cfg.email,
-      Token: genUserToken(cfg.name, cfg.pwd),
-      Key: getRandomKey(cfg.pwd)
+      Email: email,
+      Token: genUserToken(name, password),
+      Key: getRandomKey(password)
     };
     await model.User.create(newUser);
-    console.log('User created:', cfg.name);
-    process.exit();
+    console.log('Root user created:', name);
+    return true;
   } catch (e) {
-    console.log('Fail:', e);
+    console.log('Cannot create root user:', name);
+    return false;
   }
 }
-
-start(rootUser);

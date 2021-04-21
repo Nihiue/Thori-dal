@@ -35,6 +35,9 @@ router
       if (!user || !user.Email) {
         return ctx.throw(400, 'no email address.');
       }
+      if (!ctx.config.emailSender.enable) {
+        return ctx.throw(400, 'emailSender disabled.');
+      }
       const now = new Date();
       const emailText = JSON.stringify({
         records,
