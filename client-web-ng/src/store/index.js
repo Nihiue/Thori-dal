@@ -4,6 +4,8 @@ import { createStore } from 'vuex'
 import { getAccessToken, genUserToken } from '../utils/index';
 import cipher from '../utils/cipher';
 
+axios.defaults.baseURL = location.pathname;
+
 const store = createStore({
   state: {
     auth: null,
