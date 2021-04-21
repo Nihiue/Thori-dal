@@ -48,8 +48,8 @@ Open http://localhost:3000/ in browser, login with `root` `root_pwd`
 
 ## Screenshots
 
-![login screen](https://user-images.githubusercontent.com/5763301/39082960-3faa3316-458e-11e8-8207-165f38f25a18.png)
+![screenshot_1](https://user-images.githubusercontent.com/5763301/115579049-61b87600-a2f8-11eb-8cfe-1536a0a74dd8.png)
 
-![records list](https://user-images.githubusercontent.com/5763301/39082968-5f95f638-458e-11e8-9e54-ec60560cd680.png)
+![screenshot_2](https://user-images.githubusercontent.com/5763301/115579059-641ad000-a2f8-11eb-8589-d402abfa4967.png)
 
-![add new record](https://user-images.githubusercontent.com/5763301/39082963-47229264-458e-11e8-9a9a-fc5e857dae91.png)
+![screenshot_3](https://user-images.githubusercontent.com/5763301/115579065-65e49380-a2f8-11eb-9b32-4c33776b979d.png)
