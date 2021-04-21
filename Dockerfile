@@ -1,17 +1,17 @@
 FROM node:12-alpine as builder
 MAINTAINER Wanglei<nihiue@gmail.com>
 
-RUN npm install -g npm@6.10.0 --registry=https://registry.npm.taobao.org
-RUN npm config set disturl https://npm.taobao.org/dist --global
-RUN npm config set registry https://registry.npm.taobao.org --global
+RUN npm install -g npm@6.10.0
+#RUN npm config set disturl https://npm.taobao.org/dist --global
+#RUN npm config set registry https://registry.npm.taobao.org --global
 
 WORKDIR /buidler
 
 COPY server ./server
 COPY client-web-ng ./client-web-ng
 
-RUN cd ./server && npm ci
-RUN cd ./client-web-ng && npm ci && npm run build
+RUN cd ./server && npm install
+RUN cd ./client-web-ng && npm install && npm run build
 
 FROM node:12-alpine
 
