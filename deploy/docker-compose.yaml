@@ -1,6 +1,7 @@
 version: "3.4"
 volumes:
   thoridal-mongo-data:
+
 services:
   mongodb:
     image: mongo:3.6.18-xenial
@@ -17,9 +18,7 @@ services:
 
 
   server:
-    build:
-      context: ../
-      dockerfile: Dockerfile
+    image: nihiue/thoridal
     restart: always
     depends_on:
       - mongodb

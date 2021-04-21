@@ -2,43 +2,49 @@
 # Thori-dal
 > Accounts and passwords management tool based on client-side encryption
 
-
-## Client-Web
-
-- Vue.js
 - Mobile friendly
-- Protect data with AES-256-CBC
+- Client Side Encryption(AES-256-CBC)
 - TOTP(2FA, Google Authenticator) Support
 
-## Server
-
-- Koa & Mongodb
-- Only transfer encrypted data to server, you data is safe even if server is compromised
-
 ## Deploy
+
+### As Stack
 
 Requirements:
  - docker
  - docker-compose
 
-### Build Service
-```
-$ cd deploy
-$ sudo docker-compose -p thoridal build
-```
+Start service
 
-### Run Service
 ```
 $ cd deploy
 $ sudo docker-compose -p thoridal up -d
 ```
-Open http://localhost:3000/ in browser, login with `root` `root_pwd`
 
-### Stop Service
+Stop service
+
 ```
 $ cd deploy
 $ sudo docker-compose -p thoridal down
 ```
+
+### Standalone
+
+Requirements:
+ - docker
+ - Externel mongoDB instance
+
+Edit `./deploy/config.credential.js`
+
+```
+$ sudo docker pull nihiue/thoridal
+$ sudo docker run -d -p 3000:3000 --restart=always --name thoridal -v ./deploy/config.credential.js:/server/app/config/credential.js:ro nihiue/thoridal
+```
+
+### Usage
+
+Open http://localhost:3000/ in browser, login with `root` `root_pwd`
+
 
 ## Screenshots
 
