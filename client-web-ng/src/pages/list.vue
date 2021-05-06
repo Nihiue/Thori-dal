@@ -337,10 +337,8 @@ export default {
     }
   }
   .search .el-input {
-    padding: 4px 0;
     .el-input__icon.el-icon-search {
       font-size: 16px;
-      line-height: 40px;
     }
     input {
       width: 5em;
