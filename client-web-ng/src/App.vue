@@ -24,12 +24,12 @@ export default {
         this.errorLogger(e, "Unable to fetch server info");
       }
     },
-    async copyText(text) {
+    async copyText(text) {      
       try {
-        if (!window.Clipboard) {
+        if (!navigator.clipboard) {
           return;
         }
-        await window.Clipboard.writeText(text);
+        await navigator.clipboard.writeText(text);
         this.success("Copied");
       } catch (e) {
         console.log('failed to copy', e.toString());
