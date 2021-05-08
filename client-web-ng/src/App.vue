@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <component :is="activeComponent"></component>
-    <input type="text" id="copy-container" tabindex="-1" readonly />
   </div>
 </template>
 
@@ -25,12 +24,15 @@ export default {
         this.errorLogger(e, "Unable to fetch server info");
       }
     },
-    copyText(text) {
-      const el = this.$el.querySelector("#copy-container");
-      el.value = text;
-      el.select();
-      if (window.document.execCommand("copy")) {
+    async copyText(text) {
+      try {
+        if (!window.Clipboard) {
+          return;
+        }
+        await window.Clipboard.writeText(text);
         this.success("Copied");
+      } catch (e) {
+        console.log('failed to copy', e.toString());
       }
     },
     confirm(content, title) {
@@ -74,14 +76,3 @@ export default {
   },
 };
 </script>
-
-<style>
-#copy-container {
-  width: 10px;
-  opacity: 0;
-  pointer-events: none;
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-</style>
