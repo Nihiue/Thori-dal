@@ -1,4 +1,4 @@
-FROM node:12-alpine as builder
+FROM node:14-alpine as builder
 MAINTAINER Wanglei<nihiue@gmail.com>
 
 RUN npm install -g npm@6.10.0
@@ -13,7 +13,7 @@ COPY client-web-ng ./client-web-ng
 RUN cd ./server && npm install
 RUN cd ./client-web-ng && npm install && npm run build
 
-FROM node:12-alpine
+FROM node:14-alpine
 
 COPY --from=builder /buidler/server /server
 COPY --from=builder /buidler/client-web-ng/dist /server/public
