@@ -15,7 +15,7 @@
     "koa-router": "^9.4.0",
     "koa-static": "^4.0.3",
     "lodash": "^4.17.20",
-    "mongoose": "^5.10.0",
+    "mongoose": "^5.13.5",
     "nodemailer": "^6.4.16"
   },
   "devDependencies": {
