@@ -8,8 +8,9 @@ module.exports.getAccessToken = function (token, salt, time) {
 };
 
 function getIP(ctx) {
-  if (ctx.request.header['x-real-ip']) {
-    return ctx.request.header['x-real-ip'];
+  const proxyIP = ctx.request.header['x-real-ip'] || ctx.request.header['x-forwarded-for'];
+  if (proxyIP) {
+    return proxyIP;
   }
   return (typeof ctx.ip === 'string') ? ctx.ip.split(':').pop() : '';
 }
