@@ -379,12 +379,16 @@ export default {
     }
     .pwd-mask.iconfont {
       font-size: 12px;
+      display: inline;
     }
     .info-container > p {
       color: #606266;
       cursor: pointer;
       padding: 12px 0;
       margin: 0;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
       &:hover {
         color: inherit;
       }
@@ -439,6 +443,13 @@ export default {
     .action-row-container .action-row .el-button {
       margin-left: 12px;
       font-size: 22px;
+    }
+  }
+}
+@media screen and (max-width: 350px) {
+  .thoridal-list {
+    .light-block {
+      padding: 12px 18px;
     }
   }
 }
