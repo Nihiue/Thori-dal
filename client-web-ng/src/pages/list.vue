@@ -323,7 +323,7 @@ export default {
     align-items: center;
     > * {
       flex-grow: 1;
-      overflow-x: hidden;
+      overflow: hidden;
     }
     .action-row {
       overflow-x: initial;
