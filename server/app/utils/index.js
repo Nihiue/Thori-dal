@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const pinyin = require('pinyin').default;
 
 module.exports.getAccessToken = function (token, salt, time) {
   let hash = crypto.createHash('sha256');
@@ -50,3 +51,15 @@ module.exports.sendEmail = function ({account, to, subject, text}) {
     });
   });
 };
+
+module.exports.convertPinyin = function (str) {
+  if (typeof str !== 'string' || !str) {
+    return '';
+  }
+  
+  return pinyin(str, {
+    style: 'normal',
+    segment: false,  
+    group: false
+  }).flat().join('');
+}

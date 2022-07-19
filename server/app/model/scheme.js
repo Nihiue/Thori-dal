@@ -39,6 +39,10 @@ module.exports.Record = new mongoose.Schema({
     required: true,
     index: true
   },
+  NamePinyin: {
+    type: String,
+    index: true,
+  },
   Type: {
     type: Number,
     default: 0,

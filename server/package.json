@@ -1,6 +1,6 @@
 {
   "name": "thoridal-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "app/index.js",
   "scripts": {
     "dev": "NODE_ENV=development nodemon --watch app app/index.js",
@@ -10,13 +10,14 @@
   "author": "Wanglei (Nihiue@gmail.com)",
   "license": "ISC",
   "dependencies": {
-    "koa": "^2.13.0",
+    "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^9.4.0",
     "koa-static": "^4.0.3",
     "lodash": "^4.17.20",
-    "mongoose": "^5.13.5",
-    "nodemailer": "^6.4.16"
+    "mongoose": "^5.13.14",
+    "nodemailer": "^6.4.18",
+    "pinyin": "^3.0.0-alpha.4"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
