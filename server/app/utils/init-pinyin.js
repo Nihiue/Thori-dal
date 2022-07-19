@@ -22,6 +22,7 @@ module.exports.initPinyin = async function(model) {
     console.log('initPinyin', docs.length);
     return true;
   } catch (e) {
+    console.log('initPinyin', e);
     return false;
   }
 }

@@ -10,7 +10,7 @@ global._ = require('lodash');
 
 async function onAppStart(model, config) {
   await createRootUser(model, config.rootUser);
-  await initPinyin();
+  await initPinyin(model);
 }
 
 async function startApp() {
