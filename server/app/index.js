@@ -25,7 +25,7 @@ async function startApp() {
     app.context.config = config;
 
     app
-      .use(require('koa-static')(path.join(__dirname, '../public/')))
+      .use(require('koa-static')(path.join(__dirname, '../public/'), { maxage: 2592000 }))
       .use(bodyParser())
       .use(router.routes())
       .use(router.allowedMethods());
