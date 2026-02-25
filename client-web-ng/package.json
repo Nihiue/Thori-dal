@@ -7,7 +7,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "axios": "^0.21.2",
+    "axios": "^0.30.3",
     "dayjs": "^1.10.4",
     "element-plus": "^2.1.0",
     "vue": "^3.0.5",
@@ -17,7 +17,11 @@
     "@vitejs/plugin-vue": "^1.1.4",
     "@vue/compiler-sfc": "^3.0.5",
     "sass": "^1.32.8",
-    "vite": "^2.9.16",
+    "vite": "^2.9.17",
     "vite-plugin-compression": "^0.2.4"
+  },
+  "overrides": {
+    "braces": "3.0.3",
+    "rollup": "2.79.2"
   }
 }
