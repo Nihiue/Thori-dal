@@ -1,4 +1,4 @@
-FROM node:14-alpine as builder
+FROM node:20-alpine as builder
 MAINTAINER Wanglei<nihiue@gmail.com>
 
 RUN npm install -g npm@6.10.0
